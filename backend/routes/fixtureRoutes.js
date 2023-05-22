@@ -1,0 +1,20 @@
+const express = require('express')
+const router = express.Router()
+const { setFixture, getFixtures, populateStats, editStats, deleteFixture, updateScore } = require('../controllers/fixtureController')
+const { protect } = require('../middleware/authMiddleware')
+const ROLES = require('../config/permissions')
+const verifyRoles = require('../middleware/rolesMiddleware')
+
+router.route('/')
+      .get(getFixtures)
+      .post( protect, verifyRoles(ROLES.ADMIN), setFixture)
+router.route('/:id/populate')
+      .put( protect, verifyRoles(ROLES.ADMIN, ROLES.EDITOR), populateStats)
+router.route('/:id/stats')
+      .put( protect, verifyRoles(ROLES.ADMIN, ROLES.EDITOR), editStats)
+router.route('/:id/scores')
+      .put( protect, verifyRoles(ROLES.ADMIN, ROLES.EDITOR), updateScore)
+router.route('/:id')
+      .delete(protect, verifyRoles(ROLES.ADMIN), deleteFixture)
+
+module.exports = router
