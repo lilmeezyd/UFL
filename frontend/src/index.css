@@ -93,6 +93,12 @@ h3 {
   gap: 10px;
 }
 
+.goal {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
 .goal .close {
   position: absolute;
   top: 10px;

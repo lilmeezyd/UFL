@@ -13,6 +13,12 @@ const app = express()
 app.use(express.json())
 app.use(urlencoded({ extended: false }))
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'),
+    res.header('Access-Control-Allow-Headers', '*')
+    next();
+}) 
+
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/goals', require('./routes/goalRoutes'))
 app.use('/api/teams', require('./routes/teamRoutes'))
