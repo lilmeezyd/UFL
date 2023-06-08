@@ -13,13 +13,12 @@ const setMatchday = asyncHandler(async (req, res) => {
     const nameExists = await Matchday.findOne({name})
 
     //Find user
-    const user = await User.findById(req.user.id).select('-password')
-    if(!user) {
+    if(!req.user) {
         res.status(400)
         throw new Error('User not found')
     }
     // Make sure the logged in user is an ADMIN
-    if(!Object.values(user.roles).includes(2048)) {
+    if(!Object.values(req.user.roles).includes(2048)) {
         res.status(401)
         throw new Error('Not authorized')
     }
@@ -36,7 +35,7 @@ const setMatchday = asyncHandler(async (req, res) => {
     const matchday = await Matchday.create({
         name, deadlineTime
     })
-    res.status(200).json({msg: `${name} added`})
+    res.status(200).json(matchday)
 })
 
 //@desc Get Matchdays
@@ -54,14 +53,14 @@ const getMatchdays = asyncHandler(async (req, res) => {
 //@role Admin, editor
 const updateMatchday = asyncHandler(async (req, res) => {
     const matchday = await Matchday.findById(req.params.id)
+
     //Find user
-    const user = await User.findById(req.user.id).select('-password')
-    if(!user) {
+    if(!req.user) {
         res.status(400)
         throw new Error('User not found')
     }
     // Make sure the logged in user is an ADMIN
-    if(!Object.values(user.roles).includes(2048)) {
+    if(!Object.values(req.user.roles).includes(2048)) {
         res.status(401)
         throw new Error('Not authorized')
     }
@@ -96,18 +95,17 @@ const deleteMatchday = asyncHandler(async (req, res) => {
     }
 
     //FInd user 
-    const user = await User.findById(req.user.id).select('-password')
-    if(!user) {
+    if(!req.user) {
         res.status(400)
         throw new Error('User not found')
     }
-    if(!Object.values(user.roles).includes(2048)) {
+    if(!Object.values(req.user.roles).includes(2048)) {
         res.status(401)
         throw new Error('Not authorized')
     }
 
     await Matchday.findByIdAndDelete(req.params.id)
-    res.status(200).json({msg: `${matchday.name} deleted`})
+    res.status(200).json({id: req.params.id})
 })
 
 module.exports = { setMatchday, getMatchdays, updateMatchday, deleteMatchday}

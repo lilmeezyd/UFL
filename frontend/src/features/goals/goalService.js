@@ -32,6 +32,7 @@ const deleteGoal = async (goalId, token) => {
         }
     }
     const response = await axios.delete(API_URL + goalId, config)
+    console.log(response)
     return response.data
 }
 

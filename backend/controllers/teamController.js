@@ -35,7 +35,7 @@ const setTeams = asyncHandler(async (req, res) => {
     const team = await Team.create({
         name, shortName, code
     })
-    res.status(200).json({msg: `${name} added`})
+    res.status(200).json(team)
 })
 
 //@desc Get Teams
@@ -109,7 +109,7 @@ const deleteTeam = asyncHandler(async (req, res) => {
     
 
     await Team.findByIdAndDelete(req.params.id)
-    res.status(200).json({msg: `${team.name} deleted`})
+    res.status(200).json({id: req.params.id})
 })
 
 

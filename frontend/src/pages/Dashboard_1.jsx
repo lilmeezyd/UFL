@@ -1,35 +1,46 @@
 import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { getPlayers } from "../features/players/playerSlice"
-import { getTeams  } from "../features/teams/teamSlice"
-import { getMatchdays  } from "../features/matchdays/matchdaySlice"
+import {useNavigate} from "react-router-dom"
+import {useSelector, useDispatch} from "react-redux"
+import Spinner from '../components/Spinner'
+import { getGoals, reset } from "../features/goals/goalSlice"
 
-function DashboardHome() {
-
+function Dashboard() {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { players } = useSelector((state) => state.players)
-  const { teams } = useSelector((state) => state.teams)
-  const { matchdays } = useSelector((state) => state.matchdays)
+
+  const {user} = useSelector((state) => state.auth)
+  const { goals, isError, isLoading, message } = useSelector((state) => state.goals)
 
   useEffect(() => {
-    dispatch(getPlayers())
-    dispatch(getTeams())
-}, [dispatch])
+    if(isError) {
+      console.log(message)
+    }
+    if(!user) {
+      navigate('/login')
+    }
+    dispatch(getGoals())
 
-  
+   /* return () => {
+      dispatch(reset())
+    } */
+  },[user, isError, message, navigate, dispatch])
+
+  if(isLoading) {
+    return <Spinner />
+  }
   return (
     <>
     <header className="dashboard-header">
       <div className="header-element">
-        <h3>{teams.length}</h3>
+        <h3>15</h3>
         <p>Teams</p>
       </div>
       <div className="header-element">
-        <h3>{players.length}</h3>
+        <h3>38</h3>
         <p>Players</p>
       </div>
       <div className="header-element">
-        <h3>{matchdays.length}</h3>
+        <h3>30</h3>
         <p>Matchdays</p>
       </div>
       <div className="header-element">
@@ -54,8 +65,9 @@ function DashboardHome() {
       <div className="player-stats">
         <h3>Overall Dream Team</h3>
       </div>
-    </section></>
+    </section>
+    </>
   )
 }
 
-export default DashboardHome
+export default Dashboard

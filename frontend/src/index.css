@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
 
 * {
   margin: 0;
@@ -18,7 +18,7 @@ a {
 }
 
 p {
-  line-height: 1.7;
+  line-height: normal;
 }
 
 ul {
@@ -33,7 +33,7 @@ h1,
 h2,
 h3 {
   font-weight: 600;
-  margin-bottom: 10px;
+  font-size: 1rem;
 }
 
 .container {
@@ -50,7 +50,7 @@ h3 {
   align-items: center;
   padding: 20px 0;
   border-bottom: 1px solid #e6e6e6;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
 }
 
 .header ul {
@@ -74,6 +74,11 @@ h3 {
 
 .header ul li a svg {
   margin-right: 5px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.5rem;
 }
 
 .heading {
@@ -160,6 +165,12 @@ h3 {
   color: #000;
 }
 
+.btn-danger {
+  color: rgba(160, 11, 11, 1.0);
+}
+.btn-warning {
+  color: #bfc372;
+}
 .btn-block {
   width: 100%;
   margin-bottom: 20px;
@@ -200,16 +211,100 @@ h3 {
   }
 }
 
+
+/* Admin Dashboard */
+.dashboard-header {
+  display: grid;
+  gap: 5px;
+  /*grid-template-columns: minmax();*/
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.header-element {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border: 1px solid rgba(0,0,0,0.2);
+  background: #e6e6e6;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.header-element p {
+  line-height: normal;
+  font-size: 0.9rem;
+}
+
+.player-stats-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 5px;
+  padding: 20px 0;
+}
+
+.dashboard {
+  margin-bottom: 5px;
+}
+
+.dashboard ul {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.div-wrapper {
+  display: grid;
+  grid-gap: 5px;
+}
+.content-wrapper, .content-wrapper-1 {
+  display: grid;
+  grid-gap: 5px;
+  place-items: center;
+}
+
+.content-wrapper {
+  grid-template-columns: repeat(5, 1fr);
+  padding: 5px 0;
+}
+
+.content-wrapper-1 {
+  grid-template-columns: repeat(6, 1fr);
+  padding: 5px 0;
+}
+ 
+.content-wrapper:nth-of-type(odd), .content-wrapper-1:nth-of-type(odd) {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  margin-top: 20px;
+  padding: 10px;
+}
+
 @media (max-width: 600px) {
+  body {
+    font-size: 0.9rem;
+  }
+  h1,
+  h2,
+  h3,
+  .header {
+    font-size: 0.9rem;
+  }
+  .dashboard-header, .player-stats-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .btn {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+  .logo {
+    font-size: 1.2rem;
+  }
+  .dashboard ul {
+    font-size: 0.8rem;
+  }
   .form {
     width: 90%;
-  }
-
-  .heading h1 {
-    font-size: 2rem;
-  }
-
-  .heading p {
-    font-size: 1.5rem;
   }
 }

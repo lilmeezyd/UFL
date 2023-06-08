@@ -1,7 +1,7 @@
-import { FaSignInAlt, FaSignOutAlt, FaUser } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
+import DashboardHeader from "../components/DashboardHeader"
 
 function Header() {
   
@@ -19,25 +19,49 @@ function Header() {
   return (
     <header className='header'>
         <div className='logo'>
-            <Link to='/'>GoalSetter</Link>
+            <Link to='/'>Fantasy</Link>
         </div>
         <ul>
-            {user ? (
+                {
+                    user && user.roles.includes(1) && user.roles.length === 1 && <>
+                    <li>
+                <Link to='/points'>
+                    Points
+                </Link>
+               </li>
+                    <li><Link to='/pickteam'>
+                    Pick Team
+                </Link>
+                </li>
+                <li>
+                <Link to='/transfers'>
+                    Transfers
+                </Link>
+                </li>
+                <li>
+                <Link to='/leaderboard'>
+                    Leaderboard
+                </Link>
+                </li></>}
+                {user && user.roles.includes(2048) && 
+                <DashboardHeader />}
+                {user ? (
+                    <>
                 <li>
                     <button className='btn' onClick={onLogout}>
-                        <FaSignOutAlt /> Logout
+                         Logout
                     </button>
                 </li>
-            ) : 
-            (<>
-                <li>
+                </>
+            ) : (<>
+            <li>
                 <Link to='/login'>
-                    <FaSignInAlt /> Login
+                    Login
                 </Link>
             </li>
             <li>
                 <Link to='/register'>
-                    <FaUser /> Register
+                    Signup
                 </Link>
             </li>
             </>)}

@@ -9,13 +9,12 @@ const User = require('../models/userModel')
 const setPosition = asyncHandler(async(req, res) => {
     let { pluralName, singularName, shortName } = req.body
     // Find user
-    const user = await User.findById(req.user.id).select('-password')
-    if(!user) {
+    if(!req.user) {
         res.status(400)
         throw new Error('User not found')
     }
     // Make sure the logged in user is an ADMIN
-    if(!Object.values(user.roles).includes(2048)) {
+    if(!Object.values(req.user.roles).includes(2048)) {
         res.status(401)
         throw new Error('Not Authorized')
     }
@@ -32,7 +31,7 @@ const setPosition = asyncHandler(async(req, res) => {
         pluralName, singularName, shortName
     })
 
-    res.status(200).json({msg: `Positon ${singularName} created`})
+    res.status(200).json(position)
 })
 
 //@desc Get Positions
@@ -106,7 +105,7 @@ const deletePosition = asyncHandler(async (req, res) => {
         throw new Error('Position not found')
     }
     const deletedPosition = await Position.findByIdAndDelete(req.params.id)
-    res.status(200).json({msg: `${deletedPosition.singularName} field deleted`})
+    res.status(200).json({id: req.params.id})
 })
 
 module.exports = { setPosition, getPositions, updatePosition, deletePosition }

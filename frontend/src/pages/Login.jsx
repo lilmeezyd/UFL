@@ -25,8 +25,11 @@ function Login() {
     if(isError) {
       toast.error(message)
     }
-    if(isSuccess || user) {
+    if(isSuccess || (user && user.roles.includes(1) && user.roles.length === 1 )) {
       navigate('/')
+    }
+    if(user && user.roles.includes(2048)) {
+      navigate('/dashboard')
     }
     dispatch(reset())
   }, [user, isError, isSuccess, message, navigate, dispatch])
@@ -78,7 +81,7 @@ function Login() {
             />
           </div>
           <div className="form-group">
-            <button className="btn btn-block">Submit</button>
+            <button className="btn btn-block">Login</button>
           </div>
         </form>
       </section>

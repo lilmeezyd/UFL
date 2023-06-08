@@ -37,7 +37,7 @@ const setPlayer = asyncHandler(async (req, res) => {
         playerTeam
     })
 
-    res.status(200).json({msg: `${appName} created`})
+    res.status(200).json(player)
 })
 
 //@desc Get Players
@@ -45,7 +45,7 @@ const setPlayer = asyncHandler(async (req, res) => {
 //@access public
 //@role not restricted
 const getPlayers = asyncHandler(async (req, res) => {
-    const players = await Player.find({}).populate('playerPosition').populate('playerTeam')
+    const players = await Player.find({})
     res.status(200).json(players)
 })
 
@@ -92,7 +92,7 @@ const updatePlayer = asyncHandler(async (req, res) => {
 //@route DELETE /api/players/:id
 //@access private
 //@role ADMIN
-const deletePlayer = asyncHandler(async (rea, res) => {
+const deletePlayer = asyncHandler(async (req, res) => {
     const player = await Player.findById(req.params.id)
  
     if(!player) {
@@ -112,8 +112,8 @@ const deletePlayer = asyncHandler(async (rea, res) => {
         throw new Error('Not Authorized')
     }
 
-    await Player.findOneAndDelete(req.params.id)
-    res.status(200).json({msg: `${player.appName} deleted`})
+    await Player.findByIdAndDelete(req.params.id)
+    res.status(200).json({id: req.params.id})
 })
 
 
