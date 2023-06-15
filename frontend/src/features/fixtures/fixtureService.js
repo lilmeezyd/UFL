@@ -20,7 +20,7 @@ const getFixtures = async () => {
 }
 
 // Populate Fixture
-const populateFixture = async (id, token ) => {
+const populateFixture = async (id, token, roles ) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`

@@ -37,9 +37,8 @@ export const getFixtures = createAsyncThunk('fixtures/getAll', async(_, thunkAPI
 export const populateFixture = createAsyncThunk('fixtures/populate', async(id, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token
-        //const roles = thunkAPI.getState().auth.user.roles
-        console.log(token)
-        return await fixtureService.populateFixture(id, token )
+        const roles = thunkAPI.getState().auth.user.roles
+        return await fixtureService.populateFixture(id, token, roles )
     } catch (error) {
         const message = (error.message && error.response.data &&
             error.response.data.message) || error.message || error.toString()

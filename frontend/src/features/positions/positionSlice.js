@@ -69,7 +69,6 @@ export const positionSlice = createSlice({
                 state.positions.push(action.payload)
             })
             .addCase(createPosition.rejected, (state, action) => {
-                console.log(action)
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false
