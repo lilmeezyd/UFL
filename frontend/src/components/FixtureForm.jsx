@@ -5,7 +5,6 @@ import { getPositions } from "../features/positions/positionSlice"
 import { getTeams } from "../features/teams/teamSlice"
 import { getMatchdays } from "../features/matchdays/matchdaySlice"
 import { toast } from "react-toastify"
-import Spinner from "../components/Spinner"
 
 function FixtureForm() {
 
@@ -33,6 +32,9 @@ const [ data, setData ] = useState({
       dispatch(getPositions())
       dispatch(getTeams())
       dispatch(getMatchdays())
+      return () => {
+        dispatch(reset())
+      }
 
     }, [isError, message, dispatch])
 
@@ -52,17 +54,22 @@ const [ data, setData ] = useState({
             kickOffTime
         }
         dispatch(createFixture(fixture))
+        setData((prevState) => ({
+          ...prevState,
+          matchday: '',
+          teamAway: '',
+          teamHome: '',
+          kickOffTime: ''
+        }))
     }  
 
-    if(isLoading) {
-      return <Spinner />
-    }
   return (
     <section className='form'>
         <form onSubmit={onSubmit}> 
           
           <div className="form-group">
             <select name="matchday" id="matchday" onChange={onChange}>
+              <option value="">Select Matchday</option>
                 {matchdays.map(matchday => (
                     <option
                     key={matchday._id} value={matchday._id}>{matchday.name}</option>
@@ -76,6 +83,7 @@ const [ data, setData ] = useState({
           </div>
           <div className="form-group">
             <select name="teamHome" id="teamHome" onChange={onChange}>
+            <option value="">Select Home Team</option>
               {teams.map(team => (
                 <option key={team._id}
                  value={team._id}>{team.name}</option>
@@ -84,6 +92,7 @@ const [ data, setData ] = useState({
           </div>
           <div className="form-group">
             <select name="teamAway" id="teamAway" onChange={onChange}>
+            <option value="">Select Away Team</option>
               {teams.map(team => (
                 <option key={team._id}
                  value={team._id}>{team.name}</option>

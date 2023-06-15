@@ -23,6 +23,10 @@ const [ data, setData ] = useState({
         toast.error(message)
       }
 
+      return () => {
+        dispatch(reset())
+      }
+
     }, [isError, message, dispatch])
 
     const onChange = (e) => {

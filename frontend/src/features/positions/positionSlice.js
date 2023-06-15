@@ -14,11 +14,10 @@ export const createPosition = createAsyncThunk('positions/create', async(data, t
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return positionService.createPosition(data, token, roles)
+        return await positionService.createPosition(data, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
-        console.log(message)
         return thunkAPI.rejectWithValue(message)
     }
 })
@@ -26,7 +25,7 @@ export const createPosition = createAsyncThunk('positions/create', async(data, t
 // Get all Positions
 export const getPositions = createAsyncThunk('positions/getAll', async(_, thunkAPI) => {
     try {
-        return positionService.getPositions()
+        return await positionService.getPositions()
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -39,7 +38,7 @@ export const deletePosition = createAsyncThunk('positions/delete', async(id, thu
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return positionService.deletePosition(id, token, roles)
+        return await positionService.deletePosition(id, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -51,7 +50,12 @@ export const positionSlice = createSlice({
     name: 'positions',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: (state) => {
+            state.isError = false
+            state.isSuccess = false
+            state.isLoading = false
+            state.message = ''
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -65,11 +69,11 @@ export const positionSlice = createSlice({
                 state.positions.push(action.payload)
             })
             .addCase(createPosition.rejected, (state, action) => {
+                console.log(action)
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false
                 state.message = action.payload
-                console.log(action)
             })
             .addCase(getPositions.pending, (state) => {
                 state.isLoading = true

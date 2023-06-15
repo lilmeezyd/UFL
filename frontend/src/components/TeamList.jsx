@@ -1,11 +1,27 @@
 import { useDispatch, useSelector } from "react-redux"
 import { deleteTeam, getTeams, reset } from "../features/teams/teamSlice"
+import { useEffect, useState } from "react"
 import Spinner from "../components/Spinner"
-import { useEffect } from "react"
+import  ReactPaginate  from 'react-paginate'
 
 function TeamList() {
-    
+
+const [ currentPage, setCurrentPage ] = useState(1)
+const [ teamsPerPage ] = useState(5)
+
 const dispatch = useDispatch()
+const { teams, isLoading, isError, message } = useSelector(
+      (state) => state.teams)
+
+
+const indexOfLastTeam = currentPage * teamsPerPage
+const indexOfFirstTeam = indexOfLastTeam - teamsPerPage
+const currentTeams = teams.slice(indexOfFirstTeam, indexOfLastTeam)
+
+const paginate = ({ selected }) => {
+    setCurrentPage(selected + 1)
+}
+      
 
 useEffect(() => {
     dispatch(getTeams())
@@ -13,8 +29,6 @@ useEffect(() => {
         dispatch(reset())
     }
 }, [dispatch])
-const { teams, isLoading, isError, message } = useSelector(
-      (state) => state.teams)
 
 if(isLoading) {
     return <Spinner />
@@ -27,7 +41,7 @@ if(isLoading) {
         <h3>Short Name</h3>
         <h3>code</h3>
     </div>
-    { teams.map(team => (
+    { currentTeams.map(team => (
         <div key={team._id} className="content-wrapper">
         <p>{team.name}</p>
         <p>{team.shortName}</p>
@@ -38,6 +52,19 @@ if(isLoading) {
         
         </div>
     ))}
+    <ReactPaginate
+                    breakLabel="..."
+                     className="react-paginate"
+                      onPageChange={paginate}
+                      pageCount={Math.ceil(teams.length / teamsPerPage)}
+                      previousLabel={'Prev'}
+                      nextLabel={'Next'}
+                      containerClassName={'pagination'}
+                      pageLinkClassName={'page-number'}
+                      previousLinkClassName={'page-number'}
+                      nextLinkClassName={'page-number'}
+                      activeLinkClassName={'active'}
+     />
    </div>)
   )
 }

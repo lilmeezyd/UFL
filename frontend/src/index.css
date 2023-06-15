@@ -171,6 +171,10 @@ h3 {
 .btn-warning {
   color: #bfc372;
 }
+.btn-ready {
+  color: orange;
+}
+
 .btn-block {
   width: 100%;
   margin-bottom: 20px;
@@ -256,7 +260,7 @@ h3 {
   display: grid;
   grid-gap: 5px;
 }
-.content-wrapper, .content-wrapper-1 {
+.content-wrapper, .content-wrapper-1, .content-wrapper-2 {
   display: grid;
   grid-gap: 5px;
   place-items: center;
@@ -271,8 +275,15 @@ h3 {
   grid-template-columns: repeat(6, 1fr);
   padding: 5px 0;
 }
+
+.content-wrapper-2 {
+  grid-template-columns: repeat(7, 1fr);
+  padding: 5px 0;
+}
  
-.content-wrapper:nth-of-type(odd), .content-wrapper-1:nth-of-type(odd) {
+.content-wrapper:nth-of-type(odd), 
+.content-wrapper-1:nth-of-type(odd),
+.content-wrapper-2:nth-of-type(odd) {
   background: rgba(0, 0, 0, 0.1);
 }
 
@@ -307,4 +318,39 @@ footer {
   .form {
     width: 90%;
   }
+}
+
+/* Pagination */
+ul.react-paginate {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  list-style-type: none;
+  padding: 0 5rem;
+}
+
+ul.react-paginate li a {
+  border-radius: 7px;
+  padding: 0.1rem 1rem;
+  border: gray 1px solid;
+  cursor: pointer;
+}
+ul.react-paginate li.previous a,
+ul.react-paginate li.next a,
+ul.react-paginate li.break a {
+  border-color: transparent;
+}
+ul.react-paginate li.selected a {
+  background-color: #121a23;
+  border-color: transparent;
+  color: white;
+  min-width: 32px;
+}
+ul.react-paginate li.disabled a {
+  color: grey;
+}
+ul.react-paginate li.disable,
+ul.react-paginate li.disabled a {
+  cursor: default;
 }

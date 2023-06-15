@@ -20,8 +20,10 @@ const [ data, setData ] = useState({
 
     useEffect(() => {
       if(isError) {
-        console.log(message)
         toast.error(message)
+      }
+      return () => {
+        dispatch(reset())
       }
 
     }, [isError, message, dispatch])

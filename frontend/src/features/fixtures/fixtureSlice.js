@@ -5,7 +5,8 @@ const initialState = {
     fixtures: [],
     isError: false,
     isSuccess: false,
-    isLoading: false
+    isLoading: false,
+    message: ''
 }
 
 // Create new fixture
@@ -13,11 +14,10 @@ export const createFixture = createAsyncThunk('fixtures/create', async(data, thu
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return fixtureService.createFixture(data, token, roles)
+        return await fixtureService.createFixture(data, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
-        console.log(message)
         return thunkAPI.rejectWithValue(message)
     }
 })
@@ -25,9 +25,23 @@ export const createFixture = createAsyncThunk('fixtures/create', async(data, thu
 // Get all fixtures
 export const getFixtures = createAsyncThunk('fixtures/getAll', async(_, thunkAPI) => {
     try {
-        return fixtureService.getFixtures()
+        return await fixtureService.getFixtures()
     } catch (error) {
         const message = (error.response && error.response.data && 
+            error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// Populate fixture
+export const populateFixture = createAsyncThunk('fixtures/populate', async(id, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        //const roles = thunkAPI.getState().auth.user.roles
+        console.log(token)
+        return await fixtureService.populateFixture(id, token )
+    } catch (error) {
+        const message = (error.message && error.response.data &&
             error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
     }
@@ -38,7 +52,7 @@ export const deleteFixture = createAsyncThunk('fixtures/delete', async(id, thunk
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return fixtureService.deleteFixture(id, token, roles)
+        return await fixtureService.deleteFixture(id, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -50,7 +64,12 @@ export const fixtureSlice = createSlice({
     name: 'fixtures',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: (state) => {
+            state.isError = false
+            state.isLoading = false
+            state.isSuccess = false
+            state.message = ''
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -88,12 +107,30 @@ export const fixtureSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(deleteFixture.fulfilled, (state, action) => {
+                console.log(action)
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
                 state.fixtures = state.fixtures.filter((fixture) => fixture._id !== action.payload.id)
             })
             .addCase(deleteFixture.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+            })
+            .addCase(populateFixture.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(populateFixture.fulfilled, (state, action) => {
+                console.log(action.payload)
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                //state.fixtures = 
+            })
+            .addCase(populateFixture.rejected, (state, action) => {
+                console.log(action)
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false

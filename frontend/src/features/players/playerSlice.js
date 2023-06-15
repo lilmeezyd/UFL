@@ -14,11 +14,10 @@ export const createPlayer = createAsyncThunk('players/create', async(data, thunk
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return playerService.createPlayer(data, token, roles)
+        return await playerService.createPlayer(data, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
-        console.log(message)
         return thunkAPI.rejectWithValue(message)
     }
 })
@@ -26,7 +25,7 @@ export const createPlayer = createAsyncThunk('players/create', async(data, thunk
 // Get all players
 export const getPlayers = createAsyncThunk('players/getAll', async(_, thunkAPI) => {
     try {
-        return playerService.getPlayers()
+        return await playerService.getPlayers()
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -39,7 +38,7 @@ export const deletePlayer = createAsyncThunk('players/delete', async(id, thunkAP
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return playerService.deletePlayer(id, token, roles)
+        return await playerService.deletePlayer(id, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -51,7 +50,12 @@ export const playerSlice = createSlice({
     name: 'players',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: (state) => {
+            state.isError = false
+            state.isSuccess = false
+            state.isLoading = false
+            state.message = ''
+        }
     },
     extraReducers: (builder) => {
         builder

@@ -14,6 +14,7 @@ function DashboardHome() {
   useEffect(() => {
     dispatch(getPlayers())
     dispatch(getTeams())
+    dispatch(getMatchdays())
 }, [dispatch])
 
   

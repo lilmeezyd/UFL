@@ -35,6 +35,11 @@ function MatchdayForm() {
           name, deadlineTime
         }
         dispatch(createMatchday(matchdayData))
+        setData((prevState) => ({
+          ...prevState,
+          name: '',
+          deadlineTime:''
+        }))
       }
     
       if(isLoading) {

@@ -15,10 +15,10 @@ useEffect(() => {
 }, [dispatch])
 const { matchdays, isLoading, isError, message } = useSelector(
       (state) => state.matchdays)
-
+/*
 if(isLoading) {
     return <Spinner />
-}
+}*/
   return (
     (matchdays.length === 0 ? 'No matchdays found!' : 
    <div className="div-wrapper">

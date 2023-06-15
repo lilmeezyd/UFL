@@ -4,7 +4,6 @@ import { createPlayer, reset } from "../features/players/playerSlice"
 import { getPositions } from "../features/positions/positionSlice"
 import { getTeams } from "../features/teams/teamSlice"
 import { toast } from "react-toastify"
-import Spinner from "../components/Spinner"
 
 function PlayerForm() {
 
@@ -31,6 +30,9 @@ const [ data, setData ] = useState({
 
       dispatch(getPositions())
       dispatch(getTeams())
+      return () => {
+        dispatch(reset())
+      }
 
     }, [isError, message, dispatch])
 
@@ -51,19 +53,14 @@ const [ data, setData ] = useState({
             playerTeam
         }
         dispatch(createPlayer(player))
-        setData((prevState) => ({
-          ...prevState,
+        setData({
             firstName:'',
             appName:'',
             secondName:'',
             playerPosition:'',
             playerTeam:''
-        }))
+        })
     }  
-
-    if(isLoading) {
-      return <Spinner />
-    }
   return (
     <section className='form'>
         <form onSubmit={onSubmit}> 

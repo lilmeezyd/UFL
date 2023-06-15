@@ -16,8 +16,12 @@ import Matchdays from './pages/Matchdays'
 import Positions from './pages/Positions'
 import Players from './pages/Players'
 import Fixtures from './pages/Fixtures'
+import ProtectedRoute from './utils/ProtectedRoute';
+import { useSelector } from "react-redux"
 
 function App() {
+  const user = useSelector((state) => state.auth)
+
   return (
     <>
     <Router>
@@ -27,16 +31,25 @@ function App() {
           <Route path='/' element={<Home />}/>
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/dashboard' element={<Dashboard />} />
-          <Route path='/points' element={<Points />} />
-          <Route path='/pickteam' element={<PickTeam />} />
-          <Route path='/leaderboard' element={<Leaderboard />} />
-          <Route path='/transfers' element={<Transfers />} />
-          <Route path='/dashboard/players' element={<Players />} />
-          <Route path='/dashboard/teams' element={<Teams />} />
-          <Route path='/dashboard/matchdays' element={<Matchdays />} />
-          <Route path='/dashboard/fixtures' element={<Fixtures />} />
-          <Route path='/dashboard/positions' element={<Positions />} />
+          <Route element={<ProtectedRoute
+            redirectPath='/login'
+            isAllowed={!!user.user && !user.user.roles.includes(2048)}/>}>
+            <Route path='/points' element={<Points />} />
+            <Route path='/pickteam' element={<PickTeam />} />
+            <Route path='/transfers' element={<Transfers />} />
+            <Route path='/leaderboard' element={<Leaderboard />} />
+          </Route>
+          <Route element={<ProtectedRoute
+            redirectPath='*'
+            isAllowed={!!user.user && user.user.roles.includes(2048)} />}>
+            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/dashboard/players' element={<Players />} />
+            <Route path='/dashboard/teams' element={<Teams />} />
+            <Route path='/dashboard/matchdays' element={<Matchdays />} />
+            <Route path='/dashboard/fixtures' element={<Fixtures />} />
+            <Route path='/dashboard/positions' element={<Positions />} />
+          </Route>
+          <Route path="*" element={<p>There's nothing here: 404!</p>} />
         </Routes>
         <Footer />
         </div>

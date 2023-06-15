@@ -13,7 +13,7 @@ export const createTeam = createAsyncThunk('teams/create', async(data, thunkAPI)
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return teamService.createTeam(data, token, roles)
+        return await teamService.createTeam(data, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -24,7 +24,7 @@ export const createTeam = createAsyncThunk('teams/create', async(data, thunkAPI)
 // Get all teams
 export const getTeams = createAsyncThunk('teams/getAll', async(_, thunkAPI) => {
     try {
-        return teamService.getTeams()
+        return await teamService.getTeams()
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -37,7 +37,7 @@ export const deleteTeam = createAsyncThunk('teams/delete', async(id, thunkAPI) =
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return teamService.deleteTeam(id, token, roles)
+        return await teamService.deleteTeam(id, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -49,7 +49,12 @@ export const teamSlice = createSlice({
     name: 'teams',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: (state) => {
+            state.isError = false
+            state.isSuccess = false
+            state.isLoading = false
+            state.message = ''
+        }
     },
     extraReducers: (builder) => {
         builder

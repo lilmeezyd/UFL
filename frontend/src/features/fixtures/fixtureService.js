@@ -19,6 +19,18 @@ const getFixtures = async () => {
     return response.data
 }
 
+// Populate Fixture
+const populateFixture = async (id, token ) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(API_URL+id+'/populate', config)
+    return response.data
+}
+
 // Delete fixtures
 const deleteFixture =  async (id, token, roles) => {
     const config = {
@@ -33,6 +45,7 @@ const deleteFixture =  async (id, token, roles) => {
 const fixtureService = {
     createFixture,
     getFixtures,
+    populateFixture,
     deleteFixture
 }
 

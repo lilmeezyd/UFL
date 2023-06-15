@@ -13,7 +13,7 @@ export const createMatchday = createAsyncThunk('matchdays/create', async(data, t
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return matchdayService.createMatchday(data, token, roles)
+        return await matchdayService.createMatchday(data, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -24,7 +24,7 @@ export const createMatchday = createAsyncThunk('matchdays/create', async(data, t
 // Get all matchdays
 export const getMatchdays = createAsyncThunk('matchdays/getAll', async(_, thunkAPI) => {
     try {
-        return matchdayService.getMatchdays()
+        return await matchdayService.getMatchdays()
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
@@ -37,7 +37,7 @@ export const deleteMatchday = createAsyncThunk('matchdays/delete', async(id, thu
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
-        return matchdayService.deleteMatchday(id, token, roles)
+        return await matchdayService.deleteMatchday(id, token, roles)
     } catch (error) {
         const message = (error.response && error.response.data && 
             error.response.data.message) || error.message || error.toString()
