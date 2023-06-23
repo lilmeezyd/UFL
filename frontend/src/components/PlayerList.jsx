@@ -12,14 +12,6 @@ const [currentPage, setCurrentPage ] = useState(1)
 const [ playersPerPage ] = useState(5)
     
 const dispatch = useDispatch()
-const { players,  isError, message } = useSelector(
-      (state) => state.players)
-const { teams } = useSelector((state) => state.teams)
-const { positions } = useSelector((state) => state.positions)
-
-const indexOfLastPlayer = currentPage * playersPerPage
-const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage
-const currentPlayers = players.slice(indexOfFirstPlayer, indexOfLastPlayer)
 
 useEffect(() => {
     dispatch(getPlayers())
@@ -29,6 +21,15 @@ useEffect(() => {
         dispatch(reset())
     }
 }, [dispatch])
+
+const { players,  isError, message } = useSelector(
+      (state) => state.players)
+const { teams } = useSelector((state) => state.teams)
+const { positions } = useSelector((state) => state.positions)
+
+const indexOfLastPlayer = currentPage * playersPerPage
+const indexOfFirstPlayer = indexOfLastPlayer - playersPerPage
+const currentPlayers = players.slice(indexOfFirstPlayer, indexOfLastPlayer)
 
 const paginate = ({selected}) => {
     setCurrentPage(selected + 1)
@@ -50,8 +51,8 @@ if(isLoading) {
         <div key={player._id} className="content-wrapper-1">
         <p>{player.firstName}</p>
         <p>{player.appName}</p>
-        <p>{teams.filter(team => team._id === player.playerTeam)[0].shortName}</p>
-        <p>{positions.filter(position => position._id === player.playerPosition)[0].shortName}</p>
+        <p>{teams.filter(team => team._id === player.playerTeam)[0]?.shortName}</p>
+        <p>{positions.filter(position => position._id === player.playerPosition)[0]?.shortName}</p>
         <p><button 
         onClick={() => dispatch(deletePlayer(player._id))} className="btn btn-danger">Delete</button></p>
         <p><button className="btn btn-warning">Edit</button></p>

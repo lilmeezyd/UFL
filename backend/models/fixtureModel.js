@@ -4,8 +4,7 @@ const fixtureSchema = mongoose.Schema({
     matchday: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Matchday',
-        required: true,
-        unique: true
+        required: true
     },
     kickOffTime: {
         type: Date,

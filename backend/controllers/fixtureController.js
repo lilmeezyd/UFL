@@ -20,7 +20,7 @@ const setFixture = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('User not found')
     }
-    // Make sure the logged in user is an ADMIN OR EDITOR
+    // Make sure the logged in user is an ADMIN
     if(!Object.values(user.roles).includes(2048)) {
         res.status(401)
         throw new Error('Not Authorized')
@@ -28,7 +28,7 @@ const setFixture = asyncHandler(async (req, res) => {
     const fixture = await Fixture.create({
         matchday, kickOffTime, teamAway, teamHome
     })
-    res.status(200).json({msg: 'Fixture created'})
+    res.status(200).json(fixture)
 })
 
 //@desc Get Fixtures
@@ -36,7 +36,7 @@ const setFixture = asyncHandler(async (req, res) => {
 //@access public
 //@role not restricted
 const getFixtures = asyncHandler(async (req, res) => {
-    const fixtures = await Fixture.find({}).populate('teamAway').populate('teamHome')
+    const fixtures = await Fixture.find({})
     res.status(200).json(fixtures)
 })
 
@@ -46,14 +46,16 @@ const getFixtures = asyncHandler(async (req, res) => {
 //@role ADMIN EDITOR
 const populateStats = asyncHandler(async (req, res) => {
     const fixture = await Fixture.findById(req.params.id)
+    
     // Find user
     const user = await User.findById(req.user.id).select('-password')
+    
     if(!user) {
         res.status(400)
         throw new Error('User not found')
     }
     // Make sure the logged in user is an ADMIN OR EDITOR
-    if(Object.values(user.roles).includes(1) && Object.values(user.roles).length === 1) {
+    if(Object.values(req.user.roles).includes(1) && Object.values(req.user.roles).length === 1) {
         res.status(401)
         throw new Error('Not Authorized')
     }
@@ -70,12 +72,46 @@ const populateStats = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Fixture not found')
     }
+    if(fixture.stats.length > 0) {
+        res.status(400)
+        throw new Error('Fixture already populated')
+    }
     Object.values(identifiers).forEach(identifier => {
         const statObj = { identifier, away:[], home:[]}
         fixture.stats.push(statObj)
     })
     
     const updatedFixture = await Fixture.findByIdAndUpdate(req.params.id, fixture, {new: true})
+    res.status(200).json(updatedFixture)
+})
+
+//@desc Edit a specific fixture
+//@route PUT /api/fixtures/:id
+//@access private
+//@role ADMIN, EDITOR
+const editFixture = asyncHandler(async (req, res) => {
+    const fixture = await Fixture.findById(req.params.id)
+    const { matchday, kickOffTime, teamAway, teamHome } = req.body
+    if(!matchday || !kickOffTime || !teamAway || !teamHome) {
+        res.status(400)
+        throw new Error('Please add all fields')
+    }
+
+    if(!req.user) {
+        res.status(400)
+        throw new Error('User not found')
+    }
+
+    // Make sure the logged in user is an ADMIN OR EDITOR
+    if(Object.values(req.user.roles).includes(1) && Object.values(req.user.roles).length === 1) {
+        res.status(401)
+        throw new Error('Not Authorized')
+    }
+    if(!fixture) {
+        res.status(400)
+        throw new Error('Fixture not found')
+    }
+    const updatedFixture = await Fixture.findByIdAndUpdate(req.params.id, req.body, {new: true})
     res.status(200).json(updatedFixture)
 })
 
@@ -87,6 +123,10 @@ const editStats = asyncHandler(async (req, res) => {
     const fixture = await Fixture.findById(req.params.id)
     const { identifier, homeAway, player, value } = req.body
     const playerFound = await Player.findById(player)
+    if(fixture.stats.length === 0) {
+        res.status(400)
+        throw new Error('Fixture not populated yet')
+    }
     if(!identifier || !homeAway || !playerFound || !value) {
         res.status(400)
         throw new Error('Please add all fields')
@@ -136,13 +176,13 @@ const editStats = asyncHandler(async (req, res) => {
     if(playerIn) {
     let playerIndex =  fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
                         .findIndex(x => x.player.toString() === retrievedPlayer.toString())
-    let newValue = value
-    let a = fixture.stats.filter(x => x.identifier === identifier)[0][homeAway][playerIndex].value
+    let newValue = +value
+    let a = +(fixture.stats.filter(x => x.identifier === identifier)[0][homeAway][playerIndex].value)
     fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
         .splice(playerIndex, 1, {player:retrievedPlayer, value:newValue+a})
     } else {
         fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
-        .push({player:retrievedPlayer, value})
+        .push({player:retrievedPlayer, value: +value})
     }
     const updatedFixture = await Fixture.findByIdAndUpdate(req.params.id, fixture, {new: true})
     //res.json(updatedFixture)
@@ -181,6 +221,32 @@ const updateScore = asyncHandler(async (req, res) => {
 
 })
 
+//@desc Get Fixture
+//@route GET /api/fixtures/:id
+//@access private
+//@role ADMIN, EDITOR
+const getFixture = asyncHandler(async (req, res) => {
+    const fixture = await Fixture.findById(req.params.id)
+
+    if(!req.user) {
+        res.status(400)
+        throw new Error('User not found')
+    }
+
+    // Make sure the logged in user is an ADMIN OR EDITOR
+    if(Object.values(req.user.roles).includes(1) && Object.values(req.user.roles).length === 1) {
+        res.status(401)
+        throw new Error('Not Authorized')
+    }
+    if(!fixture) {
+        res.status(400)
+        throw new Error('Fixture not found')
+    }
+
+
+    res.status(200).json(fixture)
+})
+
 //@desc Delete Fixture
 //@route PUT /api/fixtures/:id
 //@access private
@@ -206,9 +272,9 @@ const deleteFixture = asyncHandler(async (req, res) => {
     }
 
     await Fixture.findByIdAndDelete(req.params.id)
-    res.status(200).json({msg: `Fixture has been deleted`})
+    res.status(200).json({id: req.params.id})
 })
 
 
 
-module.exports = { setFixture, getFixtures, populateStats, editStats, deleteFixture, updateScore }
+module.exports = { setFixture, getFixtures, getFixture, populateStats, editFixture, editStats, deleteFixture, updateScore }

@@ -3,6 +3,7 @@ import fixtureService from './fixtureService'
 
 const initialState = {
     fixtures: [],
+    singleFixture: {} ,
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -33,6 +34,19 @@ export const getFixtures = createAsyncThunk('fixtures/getAll', async(_, thunkAPI
     }
 })
 
+// Get a single fixture
+export const getFixture = createAsyncThunk('fixtures/getOne', async(id, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        const roles = thunkAPI.getState().auth.user.roles
+        return await fixtureService.getFixture(id, token, roles)
+    } catch (error) {
+        const message = (error.message && error.response.data &&
+            error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 // Populate fixture
 export const populateFixture = createAsyncThunk('fixtures/populate', async(id, thunkAPI) => {
     try {
@@ -43,6 +57,32 @@ export const populateFixture = createAsyncThunk('fixtures/populate', async(id, t
         const message = (error.message && error.response.data &&
             error.response.data.message) || error.message || error.toString()
         return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// Edit fixture
+export const editFixture = createAsyncThunk('fixtures/edit', async(data, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        const roles = thunkAPI.getState().auth.user.roles
+        return await fixtureService.editFixture(data, token, roles)
+    } catch (error) {
+        const message = (error.message && error.response.data && 
+            error.response.data.message) || error.message || error.toString()
+            return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// Edit Stats
+export const editStats = createAsyncThunk('fixtures/editStats', async(data, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        const roles = thunkAPI.getState().auth.user.roles
+        return await fixtureService.editStats(data, token, roles)
+    } catch (error) {
+        const message = (error.message && error.response.data && 
+            error.response.data.message) || error.message || error.toString()
+            return thunkAPI.rejectWithValue(message)
     }
 })
 
@@ -122,14 +162,58 @@ export const fixtureSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(populateFixture.fulfilled, (state, action) => {
-                console.log(action.payload)
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                //state.fixtures = 
+                //state.fixtures = action.payload
             })
             .addCase(populateFixture.rejected, (state, action) => {
                 console.log(action)
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+            })
+            .addCase(editFixture.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(editFixture.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                //state.fixtures = action.payload
+            })
+            .addCase(editFixture.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+            })
+            .addCase(getFixture.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getFixture.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                state.singleFixture = action.payload
+            })
+            .addCase(getFixture.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+            })
+            .addCase(editStats.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(editStats.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                state.fmessage = action.payload
+            })
+            .addCase(editStats.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false

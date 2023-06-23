@@ -3,9 +3,9 @@ import { deleteFixture, getFixtures, populateFixture, reset } from "../features/
 import { getMatchdays } from "../features/matchdays/matchdaySlice"
 import { getTeams } from "../features/teams/teamSlice"
 import { useEffect } from "react"
-import { Link } from "react-router-dom"
+import { toast } from "react-toastify"
 
-function FixtureList() {
+function FixtureList({onEdit}) {
     
 const dispatch = useDispatch()
 const { fixtures, isLoading, isError, message } = useSelector(
@@ -14,13 +14,21 @@ const { teams } = useSelector((state) => state.teams)
 const { matchdays } = useSelector((state) => state.matchdays)
 
 useEffect(() => {
+    if(isError) {
+        toast.error(message)
+    }
     dispatch(getFixtures())
     dispatch(getMatchdays())
     dispatch(getTeams())
     return () => {
         dispatch(reset())
     }
-}, [dispatch])
+}, [dispatch, isError, message])
+
+const onClick = (id) => {
+    onEdit(id)
+}
+
 /*
 if(isLoading) {
     return <Spinner />
@@ -36,16 +44,17 @@ if(isLoading) {
     </div>
     { fixtures.map(fixture => (
         <div key={fixture._id} className="content-wrapper-2">
-        <p>{matchdays.filter(matchday => matchday._id === fixture.matchday)[0].name}</p>
+        <p>{matchdays.filter(matchday => matchday._id === fixture.matchday)[0]?.name}</p>
         <p>{new Date(fixture.kickOffTime).toLocaleString('en-US')}</p>
-        <p>{teams.filter(team => team._id === fixture.teamHome)[0].name}</p>
-        <p>{teams.filter(team => team._id === fixture.teamAway)[0].name}</p>
+        <p>{teams.filter(team => team._id === fixture.teamHome)[0]?.name}</p>
+        <p>{teams.filter(team => team._id === fixture.teamAway)[0]?.name}</p>
         <p><button 
         onClick={() => dispatch(deleteFixture(fixture._id))} className="btn btn-danger">Delete</button></p>
-        <p><button className="btn btn-warning">Edit</button></p>
         <p><button
+        onClick={() => onClick(fixture._id)} className="btn btn-warning">Edit</button></p>
+        <p>{<button
         onClick={() => dispatch(populateFixture(fixture._id))}
-         className="btn btn-ready">Populate</button></p>
+         className="btn btn-ready">Populate</button>}</p>
         
         </div>
     ))}

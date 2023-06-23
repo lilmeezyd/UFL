@@ -4,11 +4,13 @@ const  User = require('../models/userModel')
 
 const protect = asyncHandler(async (req, res, next) => {
     let token
-    const authHeader = req.headers.authorization || req.headers.Authorization
+    const authHeader = req.headers.authorization|| req.body.headers.authorization || req.headers.Authorization || req.body.headers.Authorization
+    
     if(authHeader && authHeader?.startsWith('Bearer')){
         try {
             // Get token from header
-            token = req.headers.authorization.split(' ')[1]
+            //token = req.headers.authorization.split(' ')[1]
+            token = authHeader.split(' ')[1]
 
             // verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -19,7 +21,6 @@ const protect = asyncHandler(async (req, res, next) => {
 
             next()
         } catch (error) {
-            console.log(error)
             res.status(401)
             throw new Error('Not authorized')
         }
