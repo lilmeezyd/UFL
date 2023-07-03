@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { createPlayer, reset } from "../features/players/playerSlice"
 import { getPositions } from "../features/positions/positionSlice"
@@ -16,6 +16,7 @@ const [ data, setData ] = useState({
     })
   
     const { firstName, appName, secondName, playerPosition, playerTeam } = data
+    const positionChanged = useMemo(() => {return playerPosition}, [playerPosition])
     const { isError, isLoading, message } = useSelector((state) => 
       state.players
     ) 

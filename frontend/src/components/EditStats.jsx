@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import {  reset } from "../features/fixtures/fixtureSlice"
-import { getPlayers  } from "../features/players/playerSlice"
-import { editStats } from "../features/fixtures/fixtureSlice"
+import { getPlayers, getPlayer, updatePlayer  } from "../features/players/playerSlice"
+import { editStats, reset } from "../features/fixtures/fixtureSlice"
+import { toast } from "react-toastify"
 
 function EditStats({singleFixture}) {
 
-    const { players } = useSelector((state) => state.players)
+    const { players, onePlayer } = useSelector((state) => state.players)
+    const { isError, isSuccess, message } = useSelector((state) => state.fixtures)
     const dispatch = useDispatch()
     const [data, setData ] = useState({
         identifier: '', homeAway: '', player: '', value: ''
@@ -14,21 +15,34 @@ function EditStats({singleFixture}) {
 
     const { identifier, homeAway, player, value } = data
 
+
     useEffect(() => {
+      if(isError) {
+        toast.error(message)
+      }
+      dispatch(getPlayer(player))
       dispatch(getPlayers())
     
       return () => {
         dispatch(reset())
       }
-    }, [dispatch])
+    }, [dispatch, isError, message, player])
     
 
     const onSubmit = (e) => {
         e.preventDefault()
         const stats = {
             identifier, homeAway, player, value
-        }
-
+        }/*
+        if(onePlayer[identifier] + (+value) > -1) {
+          const playerStat = {}
+          playerStat[identifier] = onePlayer[identifier] + (+value)
+          dispatch(updatePlayer({id: player, playerStat}))
+        }*/
+        const playerStat = {}
+          playerStat[identifier] = onePlayer[identifier] + (+value)
+         dispatch(updatePlayer({id: player, playerStat, matchday:singleFixture.matchday}))
+        
         dispatch(editStats({id: singleFixture._id, stats}))
         setData((prevState) => ({
             ...prevState,
@@ -67,40 +81,25 @@ function EditStats({singleFixture}) {
             <select name="player" id="player" onChange={onChange}>
             <option value="">Select Player</option>
 
-            {homeAway === 'home' && identifier !== 'ownGoals' && players
+            {homeAway === 'home' && players
             .filter(x => x.playerTeam.toString() === singleFixture?.teamHome)
             .map(player => (
             <option key={player._id} value={player._id}>
                 {player.appName}
             </option>))}
 
-            {homeAway === 'away' && identifier !== 'ownGoals' && players
+            {homeAway === 'away' && players
             .filter(x => x.playerTeam.toString() === singleFixture?.teamAway)
             .map(player => (
             <option key={player._id} value={player._id}>
                 {player.appName}
             </option>))}
-
-            {homeAway === 'home' && identifier === 'ownGoals' && players
-            .filter(x => x.playerTeam.toString() === singleFixture?.teamAway)
-            .map(player => (
-            <option key={player._id} value={player._id}>
-                {player.appName}
-            </option>))}
-
-            {homeAway === 'away' && identifier === 'ownGoals' && players
-            .filter(x => x.playerTeam.toString() === singleFixture?.teamHome)
-            .map(player => (
-            <option key={player._id} value={player._id}>
-                {player.appName}
-            </option>))}        
-
             </select>
           </div>
           <div className="form-group">
             <select name="value" id="value" onChange={onChange}>
             <option value="">Select Value</option>
-              {[1,2,3,4,5,6,7,8,9].map((val, idx) => (
+              {[-1,1].map((val, idx) => (
                 <option key={idx} value={+val}>{val}</option>
               ))}
             </select>

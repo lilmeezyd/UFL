@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { getPlayers,
+        getPlayer,
         setPlayer,
         updatePlayer,
         deletePlayer } = require('../controllers/playerController')
@@ -13,6 +14,7 @@ router.route('/')
       .post(protect, verifyRoles(ROLES.ADMIN), setPlayer)
 
 router.route('/:id')
+      .get(getPlayer)
       .put(protect, verifyRoles(ROLES.ADMIN, ROLES.EDITOR), updatePlayer) 
       .delete(protect, verifyRoles(ROLES.ADMIN), deletePlayer)
 

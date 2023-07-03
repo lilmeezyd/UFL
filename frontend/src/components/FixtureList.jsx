@@ -54,7 +54,7 @@ if(isLoading) {
         onClick={() => onClick(fixture._id)} className="btn btn-warning">Edit</button></p>
         <p>{<button
         onClick={() => dispatch(populateFixture(fixture._id))}
-         className="btn btn-ready">Populate</button>}</p>
+         className="btn btn-ready">Start</button>}</p>
         
         </div>
     ))}

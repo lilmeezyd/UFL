@@ -28,6 +28,7 @@ const populateFixture = async (id, token, roles ) => {
     }
 
     const response = await axios.put(API_URL+id+'/populate', config)
+    console.log(response)
     return response.data
 }
 

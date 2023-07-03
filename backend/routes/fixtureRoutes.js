@@ -15,7 +15,7 @@ router.route('/:id/stats')
 router.route('/:id/scores')
       .put( protect, verifyRoles(ROLES.ADMIN, ROLES.EDITOR), updateScore)
 router.route('/:id')
-      .get(protect, verifyRoles(ROLES.ADMIN, ROLES.EDITOR), getFixture)
+      .get(getFixture)
       .put(protect, verifyRoles(ROLES.ADMIN, ROLES.EDITOR), editFixture)
       .delete(protect, verifyRoles(ROLES.ADMIN), deleteFixture)
 

@@ -1,29 +1,11 @@
 const mongoose = require('mongoose')
 
-const playerSchema = mongoose.Schema({
-    firstName: {
-        type: String,
-        required: [ true, 'Please add first name']
-    },
-    secondName: {
-        type: String,
-        required: [ true, 'Please add second name(s)']
-    },
-    appName: {
-        type: String,
-        required: [ true, 'Please add name to be used on app']
-    },
-    playerPosition: {
+const playerMatchdaySchema = mongoose.Schema({
+    matchday: {
         type: mongoose.Schema.Types.ObjectId,
-        required: [ true, 'Please add player position'],
-        ref: 'Position'
+        required: [true, 'Please add matchday'],
+        ref: 'Matchday'
     },
-    playerTeam: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: [ true, 'Please add player team' ],
-        ref: 'Team'
-    },
-    matchdays: [],
     matchdayPoints: {
         type: Number,
         default: 0
@@ -66,4 +48,4 @@ const playerSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Player', playerSchema)
+module.exports = mongoose.model('PlayerStats', playerMatchdaySchema)

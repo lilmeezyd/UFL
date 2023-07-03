@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const Fixture = require('../models/fixtureModel')
 const Stats = require('../models/statsModel')
 const Player = require('../models/playerModel')
+const PlayerStats = require('../models/playerStatsModel')
 const User = require('../models/userModel')
 
 //@desc Set Fixture
@@ -46,6 +47,7 @@ const getFixtures = asyncHandler(async (req, res) => {
 //@role ADMIN EDITOR
 const populateStats = asyncHandler(async (req, res) => {
     const fixture = await Fixture.findById(req.params.id)
+    const players = await Player.find({$or: [{playerTeam: fixture.teamHome}, {playerTeam: fixture.teamAway}]})
     
     // Find user
     const user = await User.findById(req.user.id).select('-password')
@@ -80,9 +82,22 @@ const populateStats = asyncHandler(async (req, res) => {
         const statObj = { identifier, away:[], home:[]}
         fixture.stats.push(statObj)
     })
+    if(!players) {
+        res.status(400)
+        throw new Error('No players found')
+    }
+    const singleMatchday = await PlayerStats.create({
+        matchday: fixture.matchday
+    })
     
-    const updatedFixture = await Fixture.findByIdAndUpdate(req.params.id, fixture, {new: true})
-    res.status(200).json(updatedFixture)
+    players.forEach(async player => {
+        player.matchdays && player.matchdays.push(singleMatchday)
+        await Player.findByIdAndUpdate(player.id, player, {new: true})
+    })
+   
+    
+   const updatedFixture = await Fixture.findByIdAndUpdate(req.params.id, fixture, {new: true})
+   res.status(200).json(updatedFixture)
 })
 
 //@desc Edit a specific fixture
@@ -112,7 +127,7 @@ const editFixture = asyncHandler(async (req, res) => {
         throw new Error('Fixture not found')
     }
     const updatedFixture = await Fixture.findByIdAndUpdate(req.params.id, req.body, {new: true})
-    res.status(200).json(updatedFixture)
+    res.status(200).json({updatedFixture, msg: `Fixture Updated`})
 })
 
 //@desc Set stats for a specific fixture
@@ -122,7 +137,7 @@ const editFixture = asyncHandler(async (req, res) => {
 const editStats = asyncHandler(async (req, res) => {
     const fixture = await Fixture.findById(req.params.id)
     const { identifier, homeAway, player, value } = req.body
-    const playerFound = await Player.findById(player)
+    const playerFound = player ? await Player.findById(player) : ''
     if(fixture.stats.length === 0) {
         res.status(400)
         throw new Error('Fixture not populated yet')
@@ -142,51 +157,49 @@ const editStats = asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error('Not Authorized')
     }
-    if(identifier === 'ownGoals') {
-        if(homeAway === 'away') {
-            if(playerFound.playerTeam.toString() !== fixture.teamHome.toString()) {
-                res.status(400)
-                throw new Error('This should be an own goal')
-            }
-        }
-        if(homeAway === 'home') {
-            if(playerFound.playerTeam.toString() !== fixture.teamAway.toString()) {
-                res.status(400)
-                throw new Error('This should be an own goal')
-            }
-        }
-    } else {
-        if(homeAway === 'away') {
-            if(playerFound.playerTeam.toString() !== fixture.teamAway.toString()) {
-                res.status(400)
-                throw new Error(`This should be for one's team`)
-            }
-        }
-        if(homeAway === 'home') {
-            if(playerFound.playerTeam.toString() !== fixture.teamHome.toString()) {
-                res.status(400)
-                throw new Error(`This should be for one's team`)
-            }
+    
+    if(homeAway === 'away') {
+        if(playerFound.playerTeam.toString() !== fixture.teamAway.toString()) {
+            res.status(400)
+            throw new Error(`This should be for one's team`)
         }
     }
+    
+    if(homeAway === 'home') {
+        if(playerFound.playerTeam.toString() !== fixture.teamHome.toString()) {
+            res.status(400)
+            throw new Error(`This should be for one's team`)
+        }
+    }
+    
     const newPlayer = await Stats.create({player})
     const retrievedPlayer = newPlayer.player
     let playerIn =  fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
                         .some(x => x.player.toString() === retrievedPlayer.toString())
-    if(playerIn) {
-    let playerIndex =  fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
-                        .findIndex(x => x.player.toString() === retrievedPlayer.toString())
     let newValue = +value
-    let a = +(fixture.stats.filter(x => x.identifier === identifier)[0][homeAway][playerIndex].value)
-    fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
-        .splice(playerIndex, 1, {player:retrievedPlayer, value:newValue+a})
+    if(playerIn) {
+        let playerIndex =  fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
+                            .findIndex(x => x.player.toString() === retrievedPlayer.toString())
+        let a = +(fixture.stats.filter(x => x.identifier === identifier)[0][homeAway][playerIndex].value)
+        if(newValue+a === 0) {
+            fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
+            .splice(playerIndex, 1)
+        } else {
+            fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
+            .splice(playerIndex, 1, {player:retrievedPlayer, value:newValue+a})
+        }
+    
     } else {
+        if(newValue === -1 ) {
+            res.status(400)
+            throw new Error(`Value can't be less than 0`)
+        }
         fixture.stats.filter(x => x.identifier === identifier)[0][homeAway]
         .push({player:retrievedPlayer, value: +value})
     }
     const updatedFixture = await Fixture.findByIdAndUpdate(req.params.id, fixture, {new: true})
     //res.json(updatedFixture)
-    res.status(200).json({msg: `Stats updated`})
+    res.status(200).json({updatedFixture, msg: `Fixture Updated`})
 })
 
 //@desc Update score for a specific fixture
@@ -223,21 +236,11 @@ const updateScore = asyncHandler(async (req, res) => {
 
 //@desc Get Fixture
 //@route GET /api/fixtures/:id
-//@access private
-//@role ADMIN, EDITOR
+//@access public
+//@role Not restricted
 const getFixture = asyncHandler(async (req, res) => {
     const fixture = await Fixture.findById(req.params.id)
 
-    if(!req.user) {
-        res.status(400)
-        throw new Error('User not found')
-    }
-
-    // Make sure the logged in user is an ADMIN OR EDITOR
-    if(Object.values(req.user.roles).includes(1) && Object.values(req.user.roles).length === 1) {
-        res.status(401)
-        throw new Error('Not Authorized')
-    }
     if(!fixture) {
         res.status(400)
         throw new Error('Fixture not found')

@@ -146,7 +146,6 @@ export const fixtureSlice = createSlice({
                 state.isLoading = true
             })
             .addCase(deleteFixture.fulfilled, (state, action) => {
-                console.log(action)
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
@@ -181,7 +180,8 @@ export const fixtureSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                //state.fixtures = action.payload
+                state.message = action.payload.msg
+                state.singleFixture = action.payload.updatedFixture
             })
             .addCase(editFixture.rejected, (state, action) => {
                 state.isLoading = false
@@ -211,7 +211,8 @@ export const fixtureSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                state.fmessage = action.payload
+                state.message = action.payload.msg
+                state.singleFixture = action.payload.updatedFixture
             })
             .addCase(editStats.rejected, (state, action) => {
                 state.isLoading = false
