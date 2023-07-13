@@ -33,15 +33,10 @@ function EditStats({singleFixture}) {
         e.preventDefault()
         const stats = {
             identifier, homeAway, player, value
-        }/*
-        if(onePlayer[identifier] + (+value) > -1) {
-          const playerStat = {}
-          playerStat[identifier] = onePlayer[identifier] + (+value)
-          dispatch(updatePlayer({id: player, playerStat}))
-        }*/
+        }
         const playerStat = {}
-          playerStat[identifier] = onePlayer[identifier] + (+value)
-         dispatch(updatePlayer({id: player, playerStat, matchday:singleFixture.matchday}))
+        playerStat[identifier] = +value
+        dispatch(updatePlayer({id: player, playerStat, matchday:singleFixture.matchday}))
         
         dispatch(editStats({id: singleFixture._id, stats}))
         setData((prevState) => ({

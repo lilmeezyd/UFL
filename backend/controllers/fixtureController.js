@@ -69,7 +69,10 @@ const populateStats = asyncHandler(async (req, res) => {
         identifier5: 'penaltiesMissed',
         identifier6: 'yellowCards',
         identifier7: 'redCards',
-        identifier8: 'saves'}
+        identifier8: 'saves',
+        identifier9: 'cleansheets',
+        identifier10: 'started',
+        identifier11: 'offBench', identifier12: 'bestPlayer'}
     if(!fixture) {
         res.status(400)
         throw new Error('Fixture not found')
@@ -93,6 +96,7 @@ const populateStats = asyncHandler(async (req, res) => {
     players.forEach(async player => {
         player.matchdays && player.matchdays.push(singleMatchday)
         await Player.findByIdAndUpdate(player.id, player, {new: true})
+        await Player.findByIdAndUpdate(player.id, {matchdayPoints: 0}, {new: true})
     })
    
     
@@ -256,6 +260,7 @@ const getFixture = asyncHandler(async (req, res) => {
 //@role ADMIN EDITOR
 const deleteFixture = asyncHandler(async (req, res) => {
     const fixture = await Fixture.findById(req.params.id)
+    const players = await Player.find({$or: [{playerTeam: fixture.teamHome}, {playerTeam: fixture.teamAway}]})
 
     if(!fixture) {
         res.status(400)
@@ -273,6 +278,44 @@ const deleteFixture = asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error('Not Authorized')
     }
+    if(!players) {
+        res.status(400)
+        throw new Error('No players found')
+    }
+    players.forEach(async player => {
+        const matchdayIndex = player.matchdays
+                          .findIndex(x => x.matchday.toString() === fixture.matchday.toString())
+        if(player.matchdays && matchdayIndex > -1) {
+            const deletedMD = player.matchdays.splice(matchdayIndex,1)
+            player.totalPoints -= deletedMD[0].matchdayPoints
+            player.goalsScored -= deletedMD[0].goalsScored
+            player.assists -= deletedMD[0].assists
+            player.ownGoals -= deletedMD[0].ownGoals
+            player.penaltiesSaved -= deletedMD[0].penaltiesSaved
+            player.penaltiesMissed -= deletedMD[0].penaltiesMissed
+            player.yellowCards -= deletedMD[0].yellowCards
+            player.redCards -= deletedMD[0].redCards
+            player.saves -= deletedMD[0].saves
+            player.cleansheets -= deletedMD[0].cleansheets
+            player.started -= deletedMD[0].started
+            player.offBench -= deletedMD[0].offBench
+            player.bestPlayer -= deletedMD[0].bestPlayer   
+            
+            player.matchdayPoints = player.matchdays.length === 0 ? 0 :
+            player.matchdays[player.matchdays.length-1].matchdayPoints 
+            
+            await Player.findByIdAndUpdate(player.id, player, {new: true})
+            await Player.findByIdAndUpdate(player.id, {
+                matchdayPoints: player.matchdayPoints,
+            totalPoints: player.totalPoints, goalsScored: player.goalsScored,
+            assists: player.assists, ownGoals: player.ownGoals,
+            penaltiesSaved: player.penaltiesSaved, penaltiesMissed: player.penaltiesMissed,
+            yellowCards: player.yellowCards, redCards: player.redCards, saves: player.saves,
+            cleansheets: player.cleansheets, started: player.started, offBench: player.offBench,
+            bestPlayer: player.bestPlayer
+        }, {new: true})
+        }
+    })
 
     await Fixture.findByIdAndDelete(req.params.id)
     res.status(200).json({id: req.params.id})

@@ -26,8 +26,8 @@ const setPlayer = asyncHandler(async (req, res) => {
         throw new Error('Not Authorized')
     }
     
-    firstName = firstName.split(' ').map(x => x[0].toLocaleUpperCase()+x.slice(1).toLocaleLowerCase()).join(' ')
-    secondName = secondName.split(' ').map(x => x[0].toLocaleUpperCase()+x.slice(1).toLocaleLowerCase()).join(' ')
+    firstName = firstName.trim().split(' ').map(x => x[0].toLocaleUpperCase()+x.slice(1).toLocaleLowerCase()).join(' ')
+    secondName = secondName.trim().split(' ').map(x => x[0].toLocaleUpperCase()+x.slice(1).toLocaleLowerCase()).join(' ')
     appName = appName.split(' ').map(x => x[0].toLocaleUpperCase()+x.slice(1).toLocaleLowerCase()).join(' ')
 
     const player = await Player.create({
@@ -109,54 +109,128 @@ const updatePlayer = asyncHandler(async (req, res) => {
                           .findIndex(x => x.matchday.toString() === req.body.matchday.toString())
         
         Object.keys(req.body).forEach(val => {
-            if(val === 'goalsScored') {
+            if(val === 'goalsScored' && 
+            (player.matchdays[matchdayIndex].goalsScored + req.body.goalsScored > -1)) {
+                player.goalsScored += req.body.goalsScored
                 if(position.singularName === 'Goalkeeper') {
                     player.matchdays[matchdayIndex].goalsScored += req.body.goalsScored
                     player.matchdays[matchdayIndex].matchdayPoints += (6*req.body.goalsScored)
+                    player.totalPoints += (6*req.body.goalsScored)
                 }
                 if(position.singularName === 'Defender') {
                     player.matchdays[matchdayIndex].goalsScored += req.body.goalsScored
-                    player.matchdays[matchdayIndex].matchdayPoints += (6*req.body.goalsScored) 
+                    player.matchdays[matchdayIndex].matchdayPoints += (6*req.body.goalsScored)
+                    player.totalPoints += (6*req.body.goalsScored) 
                 }
                 if(position.singularName === 'Midfielder') {
                     player.matchdays[matchdayIndex].goalsScored += req.body.goalsScored
-                    player.matchdays[matchdayIndex].matchdayPoints += (5*req.body.goalsScored) 
+                    player.matchdays[matchdayIndex].matchdayPoints += (5*req.body.goalsScored)
+                    player.totalPoints += (5*req.body.goalsScored)
                 }
                 if(position.singularName === 'Forward') {
                     player.matchdays[matchdayIndex].goalsScored += req.body.goalsScored
                     player.matchdays[matchdayIndex].matchdayPoints += (4*req.body.goalsScored)
+                    player.totalPoints += (4*req.body.goalsScored)
                 }
             }
-            if(val === 'assists') {
+            if(val === 'assists' && 
+            (player.matchdays[matchdayIndex].assists + req.body.assists > -1)) {
                 player.matchdays[matchdayIndex].assists += req.body.assists
                 player.matchdays[matchdayIndex].matchdayPoints += (3*req.body.assists)
+                player.assists += req.body.assists
+                player.totalPoints += (3*req.body.assists)
             }
-            if(val === 'ownGoals') {
+            if(val === 'ownGoals' && 
+            (player.matchdays[matchdayIndex].ownGoals + req.body.ownGoals > -1)) {
                 player.matchdays[matchdayIndex].ownGoals += req.body.ownGoals
                 player.matchdays[matchdayIndex].matchdayPoints += (-2*req.body.ownGoals)
+                player.ownGoals += req.body.ownGoals
+                player.totalPoints += (-2*req.body.ownGoals)
             }
-            if(val === 'penaltiesSaved') {
+            if(val === 'penaltiesSaved' && 
+            (player.matchdays[matchdayIndex].penaltiesSaved + req.body.penaltiesSaved > -1)) {
                 player.matchdays[matchdayIndex].penaltiesSaved += req.body.penaltiesSaved
                 player.matchdays[matchdayIndex].matchdayPoints += (5*req.body.penaltiesSaved)
+                player.penaltiesSaved += req.body.penaltiesSaved
+                player.totalPoints += (5*req.body.penaltiesSaved)
             }
-            if(val === 'penaltiesMissed') {
+            if(val === 'penaltiesMissed' && 
+            (player.matchdays[matchdayIndex].penaltiesMissed + req.body.penaltiesMissed > -1)) {
                 player.matchdays[matchdayIndex].penaltiesMissed += req.body.penaltiesMissed
                 player.matchdays[matchdayIndex].matchdayPoints += (-2*req.body.penaltiesMissed)
+                player.penaltiesMissed += req.body.penaltiesMissed
+                player.totalPoints += (-2*req.body.penaltiesMissed)
             }
-            if(val === 'yellowCards') {
+            if(val === 'yellowCards' && 
+            (player.matchdays[matchdayIndex].yellowCards + req.body.yellowCards > -1)) {
                 player.matchdays[matchdayIndex].yellowCards += req.body.yellowCards
                 player.matchdays[matchdayIndex].matchdayPoints += (-1*req.body.yellowCards)
+                player.yellowCards += req.body.yellowCards
+                player.totalPoints += (-1*req.body.yellowCards)
             }
-            if(val === 'redCards') {
+            if(val === 'redCards' && 
+            (player.matchdays[matchdayIndex].redCards + req.body.redCards > -1)) {
                 player.matchdays[matchdayIndex].redCards += req.body.redCards
                 player.matchdays[matchdayIndex].matchdayPoints += (-3*req.body.redCards)
+                player.redCards += req.body.redCards
+                player.totalPoints += (-3*req.body.redCards)
             }
-            if(val === 'saves') {
+            if(val === 'saves' && 
+            (player.matchdays[matchdayIndex].saves + req.body.saves > -1)) {
                 player.matchdays[matchdayIndex].matchdayPoints -= Math.floor(player.matchdays[matchdayIndex].saves / 3)
+                player.totalPoints -= Math.floor(player.saves/3)
                 player.matchdays[matchdayIndex].saves += req.body.saves
+                player.saves += req.body.saves
                 player.matchdays[matchdayIndex].matchdayPoints += Math.floor(player.matchdays[matchdayIndex].saves/3)
+                player.totalPoints += Math.floor(player.saves/3)
+            }
+            if(val === 'cleansheets' && 
+            (player.matchdays[matchdayIndex].cleansheets + req.body.cleansheets > -1)) {
+                player.cleansheets += req.body.cleansheets
+                if(position.singularName === 'Goalkeeper') {
+                    player.matchdays[matchdayIndex].cleansheets += req.body.cleansheets
+                    player.matchdays[matchdayIndex].matchdayPoints += (4*req.body.cleansheets)
+                    player.totalPoints += (4*req.body.cleansheets)
+                }
+                if(position.singularName === 'Defender') {
+                    player.matchdays[matchdayIndex].cleansheets += req.body.cleansheets
+                    player.matchdays[matchdayIndex].matchdayPoints += (4*req.body.cleansheets)
+                    player.totalPoints += (4*req.body.cleansheets)
+                }
+                if(position.singularName === 'Midfielder') {
+                    player.matchdays[matchdayIndex].cleansheets += req.body.cleansheets
+                    player.matchdays[matchdayIndex].matchdayPoints += (1*req.body.cleansheets)
+                    player.totalPoints += (1*req.body.cleansheets)
+                }
+                if(position.singularName === 'Forward') {
+                    player.matchdays[matchdayIndex].cleansheets += req.body.cleansheets
+                    player.matchdays[matchdayIndex].matchdayPoints += (0*req.body.cleansheets)
+                    player.totalPoints += (0*req.body.cleansheets)
+                }
+            }
+            if(val === 'started' && 
+            (player.matchdays[matchdayIndex].started + req.body.started > -1)) {
+                player.matchdays[matchdayIndex].started += req.body.started
+                player.matchdays[matchdayIndex].matchdayPoints += (2*req.body.started)
+                player.started += req.body.started
+                player.totalPoints += (2*req.body.started)
+            }
+            if(val === 'offBench' && 
+            (player.matchdays[matchdayIndex].offBench + req.body.offBench > -1)) {
+                player.matchdays[matchdayIndex].offBench += req.body.offBench
+                player.matchdays[matchdayIndex].matchdayPoints += (1*req.body.offBench)
+                player.offBench += req.body.offBench
+                player.totalPoints += (1*req.body.offBench)
+            }
+            if(val === 'bestPlayer' && 
+            (player.matchdays[matchdayIndex].bestPlayer + req.body.bestPlayer > -1)) {
+                player.matchdays[matchdayIndex].bestPlayer += req.body.bestPlayer
+                player.matchdays[matchdayIndex].matchdayPoints += (5*req.body.bestPlayer)
+                player.bestPlayer += req.body.bestPlayer
+                player.totalPoints += (5*req.body.bestPlayer)
             }
         })
+        player.matchdayPoints = player.matchdays[matchdayIndex].matchdayPoints
         const updatedPlayer = await Player.findByIdAndUpdate(req.params.id, player, { new: true})
         res.status(200).json({msg: `${updatedPlayer.appName} updated`,updatedPlayer})
     }
@@ -188,7 +262,11 @@ const deletePlayer = asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error('Not Authorized')
     }
-
+    const doesExist = player.matchdays.length
+    if(doesExist > 0) {
+        res.status(400)
+        throw new Error(`Can't delete player involved in previous fixture`)
+    }
     await Player.findByIdAndDelete(req.params.id)
     res.status(200).json({id: req.params.id})
 })

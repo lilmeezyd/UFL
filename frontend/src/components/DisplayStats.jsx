@@ -4,6 +4,7 @@ import {  reset, getFixture } from "../features/fixtures/fixtureSlice"
 import { getPlayers  } from "../features/players/playerSlice"
 import { getTeams } from "../features/teams/teamSlice"
 import { getMatchdays } from "../features/matchdays/matchdaySlice"
+import FixtureItem from "./FixtureItem"
 
 function DisplayStats({fixtureId, clearEdit}) {
 
@@ -43,27 +44,16 @@ function DisplayStats({fixtureId, clearEdit}) {
 const statExists = (field) => {
     return singleFixture?.stats?.findIndex(x => x.away.length === 0 && x.home.length === 0 && x.identifier === field)
 }
+
   return (
     <div key={singleFixture._id} className="content-wrapper-3">
         <button onClick={() => clearEdit()} className="btn btn-close">X</button>
-        <p>{matchdays.filter(matchday => matchday._id === singleFixture.matchday)[0]?.name}</p>
-        <p>{new Date(singleFixture.kickOffTime).toLocaleString('en-US')}</p>
-        <div onClick={onClick} className={`${stats && 'bg-teams'} teams`}>
-          <div className="home">
-            <p className="team">{teams.filter(team => team._id === singleFixture.teamHome)[0]?.name}</p>
-            <p className="score">{singleFixture?.stats?.length > 0 ?
-             singleFixture?.stats?.filter(x => x.identifier === 'goalsScored')[0]
-            .home.map(x => x.value).reduce((a, b) => a+b,0) + singleFixture?.stats?.filter(x => x.identifier === 'ownGoals')[0]
-            .away.map(x => x.value).reduce((a, b) => a+b,0) : ''}</p>
-            </div>
-
-            <div className="away">  
-            <p className="score">{singleFixture?.stats?.length > 0 ? 
-            singleFixture?.stats?.filter(x => x.identifier === 'goalsScored')[0]
-            .away.map(x => x.value).reduce((a, b) => a+b,0) + singleFixture?.stats?.filter(x => x.identifier === 'ownGoals')[0]
-            .home.map(x => x.value).reduce((a, b) => a+b,0) : ''}</p>
-            <p className="team">{teams.filter(team => team._id === singleFixture.teamAway)[0]?.name}</p>
-            </div>
+        <div className="deadline">
+            <p>{matchdays.filter(matchday => matchday._id === singleFixture.matchday)[0]?.name}</p>
+            <p>{new Date(singleFixture.kickOffTime).toDateString()}</p>
+        </div>
+        <div onClick={onClick} className={`${stats && 'bg-teams'} teams fixture`}>
+            <FixtureItem fixture={singleFixture} teams={teams} />
         </div>
         {stats && singleFixture?.stats?.length > 0 &&
             <div>{statExists('goalsScored') === -1 &&

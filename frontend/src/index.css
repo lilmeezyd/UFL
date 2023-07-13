@@ -138,12 +138,12 @@ h3 {
 }
 
 .btn {
-  padding: 10px 20px;
+  padding: 5px 10px;
   border: 1px solid #000;
   border-radius: 5px;
   background:  #000;
   color: #fff;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
@@ -176,12 +176,22 @@ h3 {
   color: orange;
 }
 
+.btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
 
 .btn-close {
   width: fit-content;
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.btn-hide {
+  visibility: hidden;
 }
 
 .btn-block {
@@ -311,11 +321,10 @@ h3 {
   padding: 0.5rem;
   justify-content: center;
   align-items: center;
-  grid-gap: 0.5rem;
   font-weight: 700;
   cursor: pointer;
-  border-bottom: 1px solid rgb(21, 90, 21);
   grid-template-columns: repeat(2, 1fr);
+  font-size: 12px;
 }
 
 .teams div {
@@ -349,6 +358,11 @@ h3 {
 
 .score {
   background: #e1f6e1;
+  border: 1px solid;
+}
+
+.away .score {
+  border-left: none;
 }
 
 .bg-teams {
@@ -387,6 +401,7 @@ h3 {
   grid-gap: 0.5rem;
   padding: 0.2rem 0;
   margin-top: 0.3rem;
+  font-size: 11px;
 }
 
 .info-container > div {
@@ -404,6 +419,45 @@ h3 {
 .stats {
   text-decoration-line: underline;
   text-decoration-style: dotted;
+  font-size: 11px;
+}
+
+.deadline {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0.5rem 0;
+  display: grid;
+  place-items: center;
+}
+
+.line {
+  width: 80%;
+  background: black;
+  text-align: center;
+  height: 1px;
+  margin-top: 0.4rem;
+}
+
+.buttons-group {
+  display: flex;
+  padding: 0.2rem;
+  align-items: center;
+  column-gap: 0.5rem;
+  flex-direction: row-reverse;
+}
+
+.time-1 {
+  text-align: right;
+  padding-right: 1px;
+}
+
+.time-2 {
+  padding-left: 1px;
+  text-align: left;
+}
+
+.fixture {
+  background: aliceblue;
 }
 
 footer {

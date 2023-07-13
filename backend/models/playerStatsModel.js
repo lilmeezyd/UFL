@@ -45,7 +45,23 @@ const playerMatchdaySchema = mongoose.Schema({
     saves: {
         type: Number,
         default: 0
-    }
+    },
+    cleansheets: {
+        type: Number,
+        default: 0
+    },
+    started: {
+        type: Number,
+        default: 0
+    },
+    offBench: {
+        type: Number,
+        default: 0
+    },
+    bestPlayer: {
+        type: Number,
+        default: 0
+    },
 })
 
 module.exports = mongoose.model('PlayerStats', playerMatchdaySchema)
