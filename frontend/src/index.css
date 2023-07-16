@@ -312,7 +312,7 @@ h3 {
   flex-direction: column;
   row-gap: 0.5rem;
   position: relative;
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -325,6 +325,7 @@ h3 {
   cursor: pointer;
   grid-template-columns: repeat(2, 1fr);
   font-size: 12px;
+  background: rgba(95, 230, 129, 0.3);
 }
 
 .teams div {
@@ -333,11 +334,15 @@ h3 {
 }
 
 .home {
-  grid-template-columns: 80% 20%;
+  grid-template-columns: 60% 20% 20%;
 }
 
 .away {
-  grid-template-columns: 20% 80%;
+  grid-template-columns: 20% 20% 60%;
+}
+
+.home img, .away img {
+  width: 25px;
 }
 
 .team {
@@ -356,8 +361,14 @@ h3 {
   padding-left: 0.5rem;
 }
 
+.date {
+  width: 100%;
+  background: rgba(205, 237, 213, 0.3);
+  padding: 0.2rem 0;
+}
+
 .score {
-  background: #e1f6e1;
+  background: #ecf1ec;
   border: 1px solid;
 }
 
@@ -430,13 +441,6 @@ h3 {
   place-items: center;
 }
 
-.line {
-  width: 80%;
-  background: black;
-  text-align: center;
-  height: 1px;
-  margin-top: 0.4rem;
-}
 
 .buttons-group {
   display: flex;

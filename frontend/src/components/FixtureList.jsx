@@ -66,15 +66,13 @@ const onIncrement = () => {
 const returnDay = (data, idx) => {
     if(idx === 0) {
         return <>
-                <p>{new Date(data[0].kickOffTime).toDateString()}</p>
-                <p className="line"></p>
+                <p className="date">{new Date(data[0].kickOffTime).toDateString()}</p>
                 </>
     }
     if(idx > 0) {
         return new Date(data[idx-1].kickOffTime).toDateString() === 
                 new Date(data[idx].kickOffTime).toDateString() ? '' :<>
-                <p>{new Date(data[idx].kickOffTime).toDateString()}</p>
-                <p className="line"></p></>
+                <p className="date">{new Date(data[idx].kickOffTime).toDateString()}</p></>
     }
 }
 
@@ -90,26 +88,26 @@ if(isLoading) {
         <button onClick={onIncrement} className={`${index === Math.max(...matchdayArray) && 'btn-hide'} btn next`}>Next</button>
     </section>
     <section className="deadline">
-        <p>Matchday {filteredMatchdays[0].name}</p>
-        <p>Deadline: {new Date(filteredMatchdays[0].deadlineTime).toDateString()}</p>
+        <p>Matchday {filteredMatchdays[0]?.name}</p>
+        <p>Deadline: {new Date(filteredMatchdays[0]?.deadlineTime).toDateString()}</p>
     </section>
     { filteredFixtures.map((fixture, idx) => (
-        <div key={fixture._id} className="fixture">
+        <div key={fixture._id}>
+        <div>
             <div className="deadline">
                 {returnDay(filteredFixtures, idx)}
             </div>
-            <div className={`teams`}>
                 <FixtureItem fixture={fixture} teams={teams} />
-            </div>
-            <div className="buttons-group">
+        </div>
+        <div className="buttons-group">
                 <p><button 
                 onClick={() => dispatch(deleteFixture(fixture._id))} className="btn btn-danger">Delete</button></p>
                 <p><button
                 onClick={() => onClick(fixture._id)} className="btn btn-warning">Edit</button></p>
-                <p>{<button
+                <p><button
                 onClick={() => dispatch(populateFixture(fixture._id))}
-                className="btn btn-ready">Start</button>}</p>
-            </div>
+                className="btn btn-ready">Start</button></p>
+        </div>
         
         </div>
     ))}

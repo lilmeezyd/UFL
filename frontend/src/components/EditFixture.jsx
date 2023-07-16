@@ -64,9 +64,11 @@ function EditFixture({fixtureId, clearEdit}) {
         }))
     }
 
+
+
     return (
     <>
-    <DisplayStats clearEdit={clearEdit} fixtureId={fixtureId} />    
+    <DisplayStats clearEdit={clearEdit} singleFixture={singleFixture} />    
     {singleFixture?.stats?.length === 0 ? 
     <section className='form'>
         <form onSubmit={onSubmit}> 
