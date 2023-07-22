@@ -167,7 +167,6 @@ export const fixtureSlice = createSlice({
                 //state.fixtures = action.payload
             })
             .addCase(populateFixture.rejected, (state, action) => {
-                console.log(action)
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false

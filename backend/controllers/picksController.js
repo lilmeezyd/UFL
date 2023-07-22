@@ -4,32 +4,32 @@ const User = require('../models/userModel')
 const Matchday = require('../models/matchdayModel')
 
 //@desc Set Pickss
-//@route POST /api/user/:uid/matchday/:id/picks/me
+//@route POST /api/picks/matchday/:id
 //@access Private
 const setPicks = asyncHandler(async(req, res) => {
     const { picks } = req.body
     const user = await User.findById(req.user.id)
-    const userHasPicks = await Picks.find({user: req.user.id})
-    const validDeadline = await Matchday.findById(req.params.mid)
+    const userHasPicks = await Picks.find({user: req.user.id, matchday: req.params.mid})
+    //const validDeadline = await Matchday.findById(req.params.mid)
     if(!picks) {
         res.status(400)
         throw new Error('No players added')
     }
     if(picks.length < 5 || picks.length > 5) {
         res.status(400)
-        throw new Error('Five players should be picked')
+        throw new Error('15 players should be picked')
     }
     //Check if it's past deadline
-    if(!(validDeadline.deadlineTime >= new Date().toISOString())) {
+    /*if(!(validDeadline.deadlineTime >= new Date().toISOString())) {
         res.status(400)
         throw new Error(`Deadline for ${validDeadline.name} has already passed`)
-    }
+    }*/
     //Check if user already has a team
     if(!user) {
         res.status(400)
         throw new Error('User not found')
     }
-   if(userHasPicks) {
+   if(userHasPicks.length > 0) {
         res.status(400)
         throw new Error('User has already made picks')
     }
@@ -43,10 +43,25 @@ const setPicks = asyncHandler(async(req, res) => {
     res.status(200).json(matchdayPicks)
 })
 
-//@desc Get Picks
+//@desc Get picks
+//@route GET /api/picks
+//@access Private
+const getPicks = asyncHandler(async(req, res) => {
+    const user = await User.findById(req.user.id)
+    const picks = await Picks.find({user: req.user.id})
+
+    if(!user) {
+        res.status(400)
+        throw new Error('User not found')
+    }
+
+    res.status(200).json(picks)
+})
+
+//@desc Get Matchday Picks
 //@route GET /api/user/:uid/matchday/:mid/picks/me
 //@access Private
-const getPicks = asyncHandler(async (req, res) => {
+const getMatchdayPicks = asyncHandler(async (req, res) => {
     const picks = await Picks.find({user: req.params.uid, matchday: req.params.mid})
     const user = await User.findById(req.user.id)
     const matchday = await Matchday.findById(req.params.mid)
@@ -138,4 +153,4 @@ const updatePicks = asyncHandler(async (req, res) => {
 
 })
 
-module.exports = { setPicks, getPicks, updatePicks, previousPicks }
+module.exports = { setPicks, getPicks, getMatchdayPicks, updatePicks, previousPicks }

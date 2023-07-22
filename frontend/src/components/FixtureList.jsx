@@ -5,11 +5,14 @@ import { getTeams } from "../features/teams/teamSlice"
 import { useMemo, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import FixtureItem from "./FixtureItem"
+import getTime from "../utils/getTime"
+import getPm from "../utils/getPm"
 
 function FixtureList({onEdit}) {
 
 const [index, setIndex] = useState(1)    
 const dispatch = useDispatch()
+const user = useSelector((state) => state.auth)
 const { fixtures, isLoading, isError, message } = useSelector(
       (state) => state.fixtures)
 const { teams } = useSelector((state) => state.teams)
@@ -83,13 +86,16 @@ if(isLoading) {
   return (
     (fixtures.length === 0 ? 'No fixtures found!' : 
    <div className="div-wrapper">
+    <h1>Fixtures</h1>
     <section className="btn-wrapper">
         <button onClick={onDecrement} className= {`${index === Math.min(...matchdayArray) && 'btn-hide'} btn previous`}>Previous</button>
         <button onClick={onIncrement} className={`${index === Math.max(...matchdayArray) && 'btn-hide'} btn next`}>Next</button>
     </section>
     <section className="deadline">
         <p>Matchday {filteredMatchdays[0]?.name}</p>
-        <p>Deadline: {new Date(filteredMatchdays[0]?.deadlineTime).toDateString()}</p>
+        <p>Deadline: {new Date(filteredMatchdays[0]?.deadlineTime).toDateString()},&nbsp;
+            {getTime(new Date(filteredMatchdays[0]?.deadlineTime).toLocaleTimeString('en-US'))}&nbsp;
+            {getPm(new Date(filteredMatchdays[0]?.deadlineTime).toLocaleTimeString('en-US'))}</p>
     </section>
     { filteredFixtures.map((fixture, idx) => (
         <div key={fixture._id}>
@@ -99,7 +105,8 @@ if(isLoading) {
             </div>
                 <FixtureItem fixture={fixture} teams={teams} />
         </div>
-        <div className="buttons-group">
+        { !!user.user && user.user.roles.includes(2048) &&
+            <div className="buttons-group">
                 <p><button 
                 onClick={() => dispatch(deleteFixture(fixture._id))} className="btn btn-danger">Delete</button></p>
                 <p><button
@@ -107,7 +114,8 @@ if(isLoading) {
                 <p><button
                 onClick={() => dispatch(populateFixture(fixture._id))}
                 className="btn btn-ready">Start</button></p>
-        </div>
+            </div>
+        } 
         
         </div>
     ))}

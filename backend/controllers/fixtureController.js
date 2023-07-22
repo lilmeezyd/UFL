@@ -4,6 +4,7 @@ const Stats = require('../models/statsModel')
 const Player = require('../models/playerModel')
 const PlayerStats = require('../models/playerStatsModel')
 const User = require('../models/userModel')
+const Matchday = require('../models/matchdayModel')
 
 //@desc Set Fixture
 //@route POST /api/fixtures
@@ -29,6 +30,14 @@ const setFixture = asyncHandler(async (req, res) => {
     const fixture = await Fixture.create({
         matchday, kickOffTime, teamAway, teamHome
     })
+    const fixtures = await Fixture.find({matchday})
+    const firstKickOff = fixtures.sort((x,y) => {
+        if(x.kickOffTime > y.kickOffTime) return 1
+        if(x.kickOffTime < y.kickOffTime) return -1
+    })[0].kickOffTime
+    const deadline = new Date(firstKickOff)
+    deadline.setMinutes(deadline.getMinutes()-60)
+    await Matchday.findByIdAndUpdate(matchday, {deadlineTime: deadline}, {new: true})
     res.status(200).json(fixture)
 })
 
@@ -250,7 +259,6 @@ const getFixture = asyncHandler(async (req, res) => {
         throw new Error('Fixture not found')
     }
 
-
     res.status(200).json(fixture)
 })
 
@@ -316,8 +324,18 @@ const deleteFixture = asyncHandler(async (req, res) => {
         }, {new: true})
         }
     })
-
     await Fixture.findByIdAndDelete(req.params.id)
+    const fixtures = await Fixture.find({matchday: fixture.matchday})
+
+    if(fixtures.length > 1) {
+        const firstKickOff = fixtures.sort((x,y) => {
+            if(x.kickOffTime > y.kickOffTime) return 1
+            if(x.kickOffTime < y.kickOffTime) return -1
+        })[0].kickOffTime
+        const deadline = new Date(firstKickOff)
+        deadline.setMinutes(deadline.getMinutes()-60)
+        await Matchday.findByIdAndUpdate(fixture.matchday, {deadlineTime: deadline}, {new: true})
+                }
     res.status(200).json({id: req.params.id})
 })
 

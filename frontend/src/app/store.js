@@ -6,6 +6,7 @@ import positionReducer from '../features/positions/positionSlice'
 import teamReducer from '../features/teams/teamSlice'
 import playerReducer from '../features/players/playerSlice'
 import fixtureReducer from '../features/fixtures/fixtureSlice'
+import picksReducer from '../features/picks/picksSlice'
 
 export const store = configureStore({
     reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
         positions: positionReducer,
         teams: teamReducer,
         players: playerReducer,
-        fixtures: fixtureReducer
+        fixtures: fixtureReducer,
+        picks: picksReducer
     }
 })

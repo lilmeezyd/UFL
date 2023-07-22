@@ -8,6 +8,7 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import Footer from './components/Footer';
 import Leaderboard from './pages/Leaderboard'
+import TeamSelection from './pages/TeamSelection'
 import PickTeam from './pages/PickTeam';
 import Points from './pages/Points'
 import Transfers from './pages/Transfers';
@@ -34,6 +35,7 @@ function App() {
           <Route element={<ProtectedRoute
             redirectPath='/login'
             isAllowed={!!user.user && !user.user.roles.includes(2048)}/>}>
+            <Route path='/teamSelection' element={<TeamSelection />} />
             <Route path='/points' element={<Points />} />
             <Route path='/pickteam' element={<PickTeam />} />
             <Route path='/transfers' element={<Transfers />} />

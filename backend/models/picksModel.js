@@ -28,8 +28,24 @@ const picksSchema = mongoose.Schema({
         default: null
     },
     picks: [
-       { player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player'}}
+       { player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true},
+        position: { type: mongoose.Schema.Types.ObjectId, ref: 'Position', required: true},
+        team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true},
+        multiplier: { type: Number, default: 1}
+        //playerPrice: { type: Number, required: true}   
+    }
     ]
 })
 
 module.exports = mongoose.model('Picks', picksSchema)
+
+/* {
+  "element_type": 1,
+  "element": 113,
+  "team": 4,
+  "disabled": true,
+  "position": 1,
+  "multiplier": 1,
+  "element_in_cost": "5.0",
+  "selling_price": "5.0"
+} */

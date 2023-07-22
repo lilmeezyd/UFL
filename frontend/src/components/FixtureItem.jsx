@@ -49,7 +49,7 @@ function FixtureItem({fixture, teams}) {
     <div className="home">
         <p className="team">{teamName(fixture?.teamHome)}</p>
             <p className="ticker-image">
-            <img src={require(`../static/t${teamCode(fixture?.teamHome)}.png`)} alt={teamName(fixture?.teamHome)} />
+            <img src={require(`../static/t${teamCode(fixture?.teamHome)}.svg`)} alt={teamName(fixture?.teamHome)} />
             </p>
         <p className={`${fixture?.stats?.length > 0 ? 'score' : 'time-1'}`}>{fixture?.stats?.length > 0 ?
             fixture?.stats?.filter(x => x.identifier === 'goalsScored')[0]
@@ -68,7 +68,7 @@ function FixtureItem({fixture, teams}) {
             }
         </p>
         <p className="ticker-image">
-        <img src={require(`../static/t${teamCode(fixture?.teamAway)}.png`)} alt={teamName(fixture?.teamAway)} />
+        <img src={require(`../static/t${teamCode(fixture?.teamAway)}.svg`)} alt={teamName(fixture?.teamAway)} />
         </p>
         <p className="team">{teamName(fixture?.teamAway)}</p>
     </div>
