@@ -1,4 +1,3 @@
-import React from 'react'
 import FixtureList from '../components/FixtureList'
 import Players from '../components/Players'
 

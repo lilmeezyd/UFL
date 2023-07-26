@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap");
 
 * {
   margin: 0;
@@ -8,7 +8,7 @@
 
 body {
   /*font-family: 'Poppins' sans-serif;*/
-  font-family: 'Montserrat', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Montserrat", Tahoma, Geneva, Verdana, sans-serif;
   height: 100vh;
 }
 
@@ -108,11 +108,9 @@ h3 {
   border-radius: 5px;
 }
 
-
-
 .form,
 .content {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -141,7 +139,7 @@ h3 {
   padding: 5px 10px;
   border: 1px solid #000;
   border-radius: 5px;
-  background:  #000;
+  background: #000;
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -167,7 +165,7 @@ h3 {
 }
 
 .btn-danger {
-  color: rgba(160, 11, 11, 1.0);
+  color: rgba(160, 11, 11, 1);
 }
 .btn-warning {
   color: #bfc372;
@@ -234,7 +232,6 @@ h3 {
   }
 }
 
-
 /* Admin Dashboard */
 .dashboard-header {
   display: grid;
@@ -248,7 +245,7 @@ h3 {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  border: 1px solid rgba(0,0,0,0.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   background: #e6e6e6;
   padding: 10px;
   border-radius: 5px;
@@ -276,10 +273,13 @@ h3 {
   align-items: center;
 }
 .div-wrapper {
-  display: grid;
-  grid-gap: 5px;
+  /*display: grid;
+  grid-gap: 5px;*/
+  height: 650px;
 }
-.content-wrapper, .content-wrapper-1, .content-wrapper-2 {
+.content-wrapper,
+.content-wrapper-1,
+.content-wrapper-2 {
   display: grid;
   grid-gap: 5px;
   place-items: center;
@@ -299,8 +299,8 @@ h3 {
   grid-template-columns: repeat(7, 1fr);
   padding: 5px 0;
 }
- 
-.content-wrapper:nth-of-type(odd), 
+
+.content-wrapper:nth-of-type(odd),
 .content-wrapper-1:nth-of-type(odd),
 .content-wrapper-2:nth-of-type(odd) {
   background: rgba(0, 0, 0, 0.1);
@@ -341,7 +341,8 @@ h3 {
   grid-template-columns: 20% 20% 60%;
 }
 
-.home img, .away img {
+.home img,
+.away img {
   width: 25px;
 }
 
@@ -389,13 +390,15 @@ h3 {
 
 .burger-container {
   width: 24px;
-  height: 24px;;
+  height: 24px;
   position: relative;
   cursor: pointer;
   display: none;
 }
 
-.burger-line, .burger-line-1, .burger-line-2 {
+.burger-line,
+.burger-line-1,
+.burger-line-2 {
   position: absolute;
   top: 0;
   left: 0;
@@ -447,7 +450,6 @@ h3 {
   place-items: center;
 }
 
-
 .buttons-group {
   display: flex;
   padding: 0.2rem;
@@ -470,9 +472,162 @@ h3 {
   background: aliceblue;
 }
 
+.squad {
+  grid-area: squad;
+}
+
+.players-col {
+  grid-area: playersCol;
+}
+
+.div-wrapper {
+  grid-area: divWrapper;
+}
+
 .team-selection {
   display: grid;
-  grid-template-columns: 65% 35%;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "squad playersCol"
+    "squad playersCol"
+    "divWrapper playersCol";
+  gap: 20px;
+}
+
+@media (max-width: 760px) {
+  .team-selection {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+      "squad"
+      "divWrapper";
+    gap: 20px;
+  }
+  .players-col {
+    display: none;
+  }
+}
+
+.player-numbers {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 1rem;
+  /*font-family: 'Montserrat';*/
+  border-bottom: 1px solid rgba(22, 22, 68, 0.1);
+  background: rgb(0 255 255 / 40%);
+  color: rgba(22, 22, 68, 1);
+}
+
+.player-numbers .number {
+  font-weight: 600;
+}
+
+.players-table {
+  padding: 0.2rem;
+  /*height: 710px;
+  overflow-x: auto;*/
+}
+
+#goalkeepers .player-header {
+  background: #ebff00;
+  border: 1px solid transparent;
+}
+#defenders .player-header {
+  background: #00ff87;
+  border: 1px solid transparent;
+}
+#midfielders .player-header {
+  background: #05f0ff;
+  border: 1px solid transparent;
+}
+#forwards .player-header {
+  background: #e90052;
+  border: 1px solid transparent;
+}
+
+.player-tbh {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  column-gap: 20px;
+}
+.player-tbh:not(.player-tbh:last-of-type) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  column-gap: 20px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.player-header .info,
+.player-tbh .info {
+  width: 16px;
+  text-align: center;
+}
+.position-table {
+  width: 60%;
+}
+
+.money {
+  width: 10%;
+}
+.others {
+  width: 20%;
+}
+.player-cell {
+  display: flex;
+  align-items: center;
+  padding: 0.2rem;
+  width: 80%;
+  margin: 0.3rem;
+}
+.player-cell.active {
+  border-color: rgba(233, 0, 82, 100);
+}
+.player-cell-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: "Montserrat", "Arial", sans-serif;
+  width: 110px;
+}
+.player-cell-info .name {
+  text-align: left;
+  text-align: -webkit-left;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+}
+.name {
+  padding-left: 0.2rem;
+  margin-bottom: 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-cell-details {
+  display: flex;
+  margin-top: 0.2rem;
+}
+
+.position {
+  display: block;
+  margin-left: 0.3rem;
+}
+.btn-table {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  padding: 0rem;
+  margin: 0.3rem 0;
+  cursor: pointer;
 }
 
 footer {
@@ -511,7 +666,8 @@ footer {
   .burger-container {
     display: block;
   }
-  .dashboard-header, .player-stats-info {
+  .dashboard-header,
+  .player-stats-info {
     grid-template-columns: repeat(2, 1fr);
   }
   .btn {

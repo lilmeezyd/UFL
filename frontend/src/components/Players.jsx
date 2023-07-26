@@ -8,6 +8,7 @@ import lastPage from '../static/last_page.png'
 import firstPage from '../static/first_page.png'
 import prevPage from "../static/chevron_left.png"
 import nextPage from "../static/chevron_right.png"
+import PositionElement from './PositionElement'
 
 function Players() {
 
@@ -30,15 +31,15 @@ function Players() {
     dispatch(getPlayers())
   }, [dispatch])
 
-  const filteredPlayers = useMemo(() => {
-    returnPlayers(players, sort, view, word, curPage, pageSize, cutPrice)
-  }, [players, sort, view, word, curPage, pageSize, cutPrice])
+  const filteredPlayers = useMemo(
+    () => returnPlayers(players, sort, view, word, curPage, pageSize, cutPrice)
+    , [players, sort, view, word, curPage, pageSize, cutPrice])
 
 
   const onView = (e) => {
     setView(e.target.value);
     setCurPage(1);
-   }
+  }
   const onSearch = (e) => {
     setWord(e.target.value);
     setCurPage(1);
@@ -46,7 +47,17 @@ function Players() {
   const onSort = (e) => {
     setSort(e.target.value);
     setCurPage(1);
-   }
+  }
+
+  const goalkeepers = filteredPlayers.filter(
+    (player) => player.playerPosition === '648a4408ae0e41bee2304c9a'
+  );
+  const defenders = filteredPlayers.filter(player =>
+    player.playerPosition === '647faf277bb2ccc06e8bb00d')
+  const midfielders = filteredPlayers.filter(player =>
+    player.playerPosition === '647faf357bb2ccc06e8bb010')
+  const forwards = filteredPlayers.filter(player =>
+    player.playerPosition === '64807d367bb2ccc06e8bb051')
   return (
     <section className="players-col">
       <div className="players small">
@@ -65,7 +76,7 @@ function Players() {
                   <optgroup label='By Position'>
                     {positions.map((pos, idx) => {
                       return (
-                        <option key={idx} value={'position_'+pos._id}>{pos.pluralName}</option>
+                        <option key={idx} value={'position_' + pos._id}>{pos.pluralName}</option>
                       )
                     }
                     )}
@@ -73,7 +84,7 @@ function Players() {
                   <optgroup label='By Team'>
                     {teams.map((team, idx) => {
                       return (
-                        <option key={idx} value={'team_'+team._id}>{team.name}</option>)
+                        <option key={idx} value={'team_' + team._id}>{team.name}</option>)
                     }
                     )}
                   </optgroup>
@@ -98,13 +109,27 @@ function Players() {
         </div>
       </div>
 
-      {players.length ?
+      {filteredPlayers?.length ?
         <div className="player-info">
-          <div className="player-numbers small">
+          <div className="player-numbers">
             <span className="number">{filteredPlayers?.length}&nbsp;</span>
             <span className="numbers">{filteredPlayers?.length === 1 ? 'Player' : 'Players'}</span>
           </div>
-          {filteredPlayers}
+
+          <div className="players-table">
+            <PositionElement
+              id={'goalkeepers'}
+              fieldPosition={goalkeepers} teams={teams} positions={positions} sort={sort} />
+            <PositionElement
+              id={'defenders'}
+              fieldPosition={defenders} teams={teams} positions={positions} sort={sort} />
+            <PositionElement
+              id={'midfielders'}
+              fieldPosition={midfielders} teams={teams} positions={positions} sort={sort} />
+            <PositionElement
+              id={'forwards'}
+              fieldPosition={forwards} teams={teams} positions={positions} sort={sort} />
+          </div>
         </div> : <div className='no-trans small'>No Players Found</div>}
     </section>
   )

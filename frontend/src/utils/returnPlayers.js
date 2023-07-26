@@ -18,24 +18,16 @@ const returnPlayers = (
   } else {
     filteredPlayers.push(...players);
   }
-  console.log(view);
-
-  const goalkeepers = filteredPlayers.filter(
-    (player) => player.playerPosition === 1
-  );
-
-  const defenders = filteredPlayers.filter(
-    (player) => player.playerPosition === 2
-  );
-
-  const midfielders = filteredPlayers.filter(
-    (player) => player.playerPosition === 3
-  );
-
-  const forwards = filteredPlayers.filter(
-    (player) => player.playerPosition === 4
-  );
-  return filteredPlayers;
+  
+  const sortPlayer = (x,y) => {
+    if(x[sort]>y[sort]) return -1
+    if(x[sort]<y[sort]) return 1
+}
+const returnedPlayers = filteredPlayers
+.sort(sortPlayer)
+.filter(player => player.appName.toLowerCase().startsWith(word?.toLowerCase()))
+  
+  return returnedPlayers;
 };
 
 export default returnPlayers;
