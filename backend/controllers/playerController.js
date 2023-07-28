@@ -8,8 +8,8 @@ const Position = require('../models/positionModel')
 //@access Private
 //@role Admin
 const setPlayer = asyncHandler(async (req, res) => {
-    let { firstName, secondName, appName, playerPosition, playerTeam } = req.body
-    if(!firstName || !secondName || !appName || !playerPosition || !playerTeam ) {
+    let { firstName, secondName, appName, playerPosition, playerTeam, startCost } = req.body
+    if(!firstName || !secondName || !appName || !playerPosition || !playerTeam || !startCost) {
         res.status(400)
         throw new Error('Please add all fields')
     }
@@ -35,7 +35,9 @@ const setPlayer = asyncHandler(async (req, res) => {
         secondName,
         appName,
         playerPosition,
-        playerTeam
+        playerTeam,
+        startCost,
+        nowCost: startCost
     })
     res.status(200).json(player)
 })

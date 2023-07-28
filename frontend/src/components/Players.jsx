@@ -4,6 +4,7 @@ import { getPositions } from "../features/positions/positionSlice"
 import { getTeams } from "../features/teams/teamSlice"
 import { getPlayers } from '../features/players/playerSlice'
 import returnPlayers from '../utils/returnPlayers'
+import getPrices from '../utils/getPrices'
 import lastPage from '../static/last_page.png'
 import firstPage from '../static/first_page.png'
 import prevPage from "../static/chevron_left.png"
@@ -18,12 +19,13 @@ function Players() {
   const [word, setWord] = useState('')
   const [cutPrice, setCutPrice] = useState(25)
   const [curPage, setCurPage] = useState(1)
-  const pageSize = 20
+  const pageSize = 10
 
   const dispatch = useDispatch()
   const { teams } = useSelector((state) => state.teams)
   const { positions } = useSelector((state) => state.positions)
   const { players } = useSelector((state) => state.players)
+  const prices = getPrices(players)
 
   useEffect(() => {
     dispatch(getTeams())
@@ -34,6 +36,8 @@ function Players() {
   const filteredPlayers = useMemo(
     () => returnPlayers(players, sort, view, word, curPage, pageSize, cutPrice)
     , [players, sort, view, word, curPage, pageSize, cutPrice])
+
+  let totalPages = Math.ceil(filteredPlayers.originalPlayers.length / pageSize)
 
 
   const onView = (e) => {
@@ -49,14 +53,33 @@ function Players() {
     setCurPage(1);
   }
 
-  const goalkeepers = filteredPlayers.filter(
+  const onPrice = (e) => {
+    setCutPrice(e.target.value)
+    setCurPage(1)
+  }
+  const viewNextPage = () => {
+    setCurPage(curPage + 1)
+  }
+  const viewPreviousPage = () => {
+    setCurPage(curPage - 1)
+  }
+
+  const viewFirstPage = () => {
+    setCurPage(1)
+  }
+
+  const viewLastPage = () => {
+    setCurPage(totalPages)
+  }
+
+  const goalkeepers = filteredPlayers.returnedPlayers.filter(
     (player) => player.playerPosition === '648a4408ae0e41bee2304c9a'
   );
-  const defenders = filteredPlayers.filter(player =>
+  const defenders = filteredPlayers.returnedPlayers.filter(player =>
     player.playerPosition === '647faf277bb2ccc06e8bb00d')
-  const midfielders = filteredPlayers.filter(player =>
+  const midfielders = filteredPlayers.returnedPlayers.filter(player =>
     player.playerPosition === '647faf357bb2ccc06e8bb010')
-  const forwards = filteredPlayers.filter(player =>
+  const forwards = filteredPlayers.returnedPlayers.filter(player =>
     player.playerPosition === '64807d367bb2ccc06e8bb051')
   return (
     <section className="players-col">
@@ -94,9 +117,17 @@ function Players() {
               <div className="form-group sort">
                 <label>Sorted by</label>
                 <select onChange={onSort} className="custom-select small" id="sort_by">
-                  <option value="total_points">Total points</option>
-                  <option value="event_points">Round points</option>
-                  <option value="now_cost">Price</option>
+                  <option value="totalPoints">Total points</option>
+                  <option value="matchdayPoints">Round points</option>
+                  <option value="nowCost">Price</option>
+                </select>
+              </div>
+
+              <div className="form-group cost">
+                <select onChange={onPrice} className="custom-select" id="cost_by">
+                  {prices.map((price, idx) =>
+                    <option key={idx} value={price}>{price}</option>
+                  )}
                 </select>
               </div>
 
@@ -109,11 +140,11 @@ function Players() {
         </div>
       </div>
 
-      {filteredPlayers?.length ?
+      {filteredPlayers?.originalPlayers.length ?
         <div className="player-info">
           <div className="player-numbers">
-            <span className="number">{filteredPlayers?.length}&nbsp;</span>
-            <span className="numbers">{filteredPlayers?.length === 1 ? 'Player' : 'Players'}</span>
+            <span className="number">{filteredPlayers?.originalPlayers.length}&nbsp;</span>
+            <span className="numbers">{filteredPlayers?.originalPlayers.length === 1 ? 'Player' : 'Players'}</span>
           </div>
 
           <div className="players-table">
@@ -131,6 +162,25 @@ function Players() {
               fieldPosition={forwards} teams={teams} positions={positions} sort={sort} />
           </div>
         </div> : <div className='no-trans small'>No Players Found</div>}
+      <div className="button-controls">
+        <button disabled={curPage === 1 ? true : false} onClick={viewFirstPage} className="btn btn-controls" id="firstPage">
+          <img src={firstPage} alt="first_page" />
+        </button>
+        <button disabled={curPage === 1 ? true : false} onClick={viewPreviousPage} className="btn btn-controls" id="prevButton">
+          <img src={prevPage} alt="prev_page" />
+        </button>
+        <div className="pages">
+          <span className="current">{curPage}</span>
+          <span>of</span>
+          <span className="total_pages">{totalPages}</span>
+        </div>
+        <button disabled={curPage === totalPages ? true : false} onClick={viewNextPage} className="btn btn-controls" id="nextButton">
+          <img src={nextPage} alt="next_page" />
+        </button>
+        <button disabled={curPage === totalPages ? true : false} onClick={viewLastPage} className="btn btn-controls" id="lastPage">
+          <img src={lastPage} alt="last_page" />
+        </button>
+      </div>
     </section>
   )
 }

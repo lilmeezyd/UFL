@@ -12,10 +12,11 @@ const [ data, setData ] = useState({
     appName: '',
     secondName: '',
     playerPosition: '',
-    playerTeam: ''
+    playerTeam: '',
+    startCost: ''
     })
   
-    const { firstName, appName, secondName, playerPosition, playerTeam } = data
+    const { firstName, appName, secondName, playerPosition, playerTeam, startCost } = data
     const positionChanged = useMemo(() => {return playerPosition}, [playerPosition])
     const { isError, isLoading, message } = useSelector((state) => 
       state.players
@@ -51,7 +52,8 @@ const [ data, setData ] = useState({
             appName,
             secondName,
             playerPosition,
-            playerTeam
+            playerTeam,
+            startCost
         }
         dispatch(createPlayer(player))
         setData({
@@ -59,7 +61,8 @@ const [ data, setData ] = useState({
             appName:'',
             secondName:'',
             playerPosition:'',
-            playerTeam:''
+            playerTeam:'',
+            startCost
         })
     }  
   return (
@@ -100,6 +103,9 @@ const [ data, setData ] = useState({
                  value={team._id}>{team.name}</option>
               ))}
             </select>
+          </div>
+          <div className="form-group">
+            <input type="number" id='startCost' name="startCost" value={startCost} onChange={onChange}/>
           </div>
           <div className="form-group">
             <button className="btn btn-block">Submit</button>

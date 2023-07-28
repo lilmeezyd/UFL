@@ -23,11 +23,23 @@ const returnPlayers = (
     if(x[sort]>y[sort]) return -1
     if(x[sort]<y[sort]) return 1
 }
-const returnedPlayers = filteredPlayers
+
+const returned = (event, idx) => {
+  let start = (curPage-1)*pageSize
+  let end = curPage*pageSize
+  if(idx >= start && idx < end) return true
+}
+const originalPlayers = filteredPlayers
 .sort(sortPlayer)
+.filter(player => +(player.nowCost).toFixed(1)<=cutPrice)
 .filter(player => player.appName.toLowerCase().startsWith(word?.toLowerCase()))
+
+const returnedPlayers =
+originalPlayers
+.filter(returned)
+
   
-  return returnedPlayers;
+  return {originalPlayers, returnedPlayers};
 };
 
 export default returnPlayers;

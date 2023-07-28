@@ -23,6 +23,14 @@ const playerSchema = mongoose.Schema({
         required: [ true, 'Please add player team' ],
         ref: 'Team'
     },
+    startCost: {
+        type: Number,
+        required: [ true, 'Please add price']
+    },
+    nowCost: {
+        type: Number,
+        default: 4.0
+    },
     matchdays: [],
     matchdayPoints: {
         type: Number,

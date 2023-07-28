@@ -8,7 +8,7 @@ function PositionElement({fieldPosition, teams, positions, sort, id}) {
                 <div className="player-header">
                   <div className="info"></div>
                   <div className="position-table">{id[0].toUpperCase()+id.slice(1)}</div>
-                  <div className="money">£</div>
+                  <div className="money">Ugx</div>
                   <div className="others">Points</div>
                 </div>
                 <div>
@@ -20,11 +20,11 @@ function PositionElement({fieldPosition, teams, positions, sort, id}) {
                       (x) => x._id === onePlayer.playerPosition
                     );
                     let shortPos = positionObj.shortName;
-                    /*let forwardImage =
-                      positionObj.id === 1
+                    let forwardImage =
+                      positionObj._id === '648a4408ae0e41bee2304c9a'
                         ? `${teamObj.code}_1-66`
                         : `${teamObj.code}-66`;
-                    let backgroundColor =
+                   /* let backgroundColor =
                       news === 0
                         ? "darkred"
                         : news === 25
@@ -47,7 +47,7 @@ function PositionElement({fieldPosition, teams, positions, sort, id}) {
                         key={onePlayer._id}
                         //backgroundColor={backgroundColor}
                         //color={color}
-                        //forwardImage={forwardImage}
+                        forwardImage={forwardImage}
                         playerPos={onePlayer}
                         shortName={shortName}
                         shortPos={shortPos}
