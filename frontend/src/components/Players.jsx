@@ -11,7 +11,7 @@ import prevPage from "../static/chevron_left.png"
 import nextPage from "../static/chevron_right.png"
 import PositionElement from './PositionElement'
 
-function Players() {
+function Players({ playerPicks, onClick, showPlayers, handleClose, handleShow, showPop }) {
 
 
   const [sort, setSort] = useState('totalPoints')
@@ -82,7 +82,7 @@ function Players() {
   const forwards = filteredPlayers.returnedPlayers.filter(player =>
     player.playerPosition === '64807d367bb2ccc06e8bb051')
   return (
-    <section className="players-col">
+    <section className={`${showPlayers}`}>
       <div className="players small">
         <div className="players-container">
           <div className="players-heading-container">
@@ -149,16 +149,36 @@ function Players() {
 
           <div className="players-table">
             <PositionElement
+              playerPicks={playerPicks}
               id={'goalkeepers'}
+              handleShow={handleShow}
+              handleClose={handleClose}
+              showPop={showPop}
+              onClick={onClick}
               fieldPosition={goalkeepers} teams={teams} positions={positions} sort={sort} />
             <PositionElement
+              playerPicks={playerPicks}
               id={'defenders'}
+              handleShow={handleShow}
+              handleClose={handleClose}
+              showPop={showPop}
+              onClick={onClick}
               fieldPosition={defenders} teams={teams} positions={positions} sort={sort} />
             <PositionElement
+              playerPicks={playerPicks}
               id={'midfielders'}
+              handleShow={handleShow}
+              handleClose={handleClose}
+              showPop={showPop}
+              onClick={onClick}
               fieldPosition={midfielders} teams={teams} positions={positions} sort={sort} />
             <PositionElement
+              playerPicks={playerPicks}
               id={'forwards'}
+              handleShow={handleShow}
+              handleClose={handleClose}
+              showPop={showPop}
+              onClick={onClick}
               fieldPosition={forwards} teams={teams} positions={positions} sort={sort} />
           </div>
         </div> : <div className='no-trans small'>No Players Found</div>}

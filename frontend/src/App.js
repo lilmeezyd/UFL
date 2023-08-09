@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import Dashboard from './pages/Dashboard';
@@ -19,11 +20,22 @@ import Players from './pages/Players'
 import Fixtures from './pages/Fixtures'
 import ProtectedRoute from './utils/ProtectedRoute';
 import { useSelector } from "react-redux"
+import { ModalContext } from './modalContext';
 
 function App() {
   const user = useSelector((state) => state.auth)
-
+  const [showModal, setShowModal] = useState(false) 
+  const handleShow = () => {
+    setShowModal(true)
+  }
+  const handleClose = () => {
+    setShowModal(false)
+  }
+  const onClick = () => {
+    //setShowModal(false)
+  }
   return (
+    <ModalContext.Provider value={showModal}>
     <>
     <Router>
       <div className='container'>
@@ -35,7 +47,8 @@ function App() {
           <Route element={<ProtectedRoute
             redirectPath='/login'
             isAllowed={!!user.user && !user.user.roles.includes(2048)}/>}>
-            <Route path='/teamSelection' element={<TeamSelection />} />
+            <Route path='/teamSelection' 
+            element={<TeamSelection showPop={showModal} handleShow={handleShow} handleClose={handleClose} />} />
             <Route path='/points' element={<Points />} />
             <Route path='/pickteam' element={<PickTeam />} />
             <Route path='/transfers' element={<Transfers />} />
@@ -54,10 +67,12 @@ function App() {
           <Route path="*" element={<p>There's nothing here: 404!</p>} />
         </Routes>
         <Footer />
+        {showModal && <div onClick={onClick} className="playerpopup"></div>}
         </div>
     </Router>
     <ToastContainer />
     </>
+    </ModalContext.Provider>
   );
 }
 
