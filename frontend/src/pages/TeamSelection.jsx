@@ -108,7 +108,7 @@ function TeamSelection({ managerPicks, showPop, handleClose, handleShow }) {
 
   return (
     <>
-      <TransferHeader toggleList={toggleList} list={list} />
+      <TransferHeader title={`Team Selection`} toggleList={toggleList} list={list} />
       <div className='team-selection'>
         <SelectionBody
           picks={[]}

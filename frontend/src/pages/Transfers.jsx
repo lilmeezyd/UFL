@@ -76,7 +76,7 @@ function Transfers({ showPop, handleShow, handleClose }) {
 
   return (
     <>
-      <TransferHeader toggleList={toggleList} list={list} />
+      <TransferHeader title={`Transfers`} toggleList={toggleList} list={list} />
       <div className='team-selection'>
         {Object.keys(managerPicks).length > 0 && <TransferBody
           picks={managerPicks?.picks}
