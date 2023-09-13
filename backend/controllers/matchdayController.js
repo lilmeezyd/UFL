@@ -7,10 +7,12 @@ const User = require('../models/userModel')
 //@access Private
 //@role ADMIN
 const setMatchday = asyncHandler(async (req, res) => {
-    let { name, deadlineTime } = req.body
-    let timeString = new Date(deadlineTime).toISOString()
+    let { name } = req.body
+    //let timeString = new Date(deadlineTime).toISOString()
     name = name && name.split(' ').map(x => x[0].toLocaleUpperCase()+x.slice(1).toLocaleLowerCase()).join(' ')
+    let id = +name.slice(8).trim()
     const nameExists = await Matchday.findOne({name})
+    const idExists = await Matchday.findOne({id})
 
     //Find user
     if(!req.user) {
@@ -27,13 +29,17 @@ const setMatchday = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Matchday Exists')
     }
-    if(!name || !deadlineTime) {
+    if(idExists) {
+        res.status(400)
+        throw new Error('Id already taken')
+    }
+    if(!name) {
         res.status(400)
         throw new Error('Please add all fields')
     }
 
     const matchday = await Matchday.create({
-        name, deadlineTime
+        name, id
     })
     res.status(200).json(matchday)
 })
@@ -43,7 +49,7 @@ const setMatchday = asyncHandler(async (req, res) => {
 //@access Public
 //@role Admin, editor, normal_user
 const getMatchdays = asyncHandler(async (req, res) => {
-    const matchdays = await Matchday.find({})
+    const matchdays = await Matchday.find({}).select('-_id')
     res.status(200).json(matchdays)
 })
 
@@ -87,7 +93,7 @@ const updateMatchday = asyncHandler(async (req, res) => {
 //@access Private
 //@roles Admin
 const deleteMatchday = asyncHandler(async (req, res) => {
-    const matchday = await Matchday.findById(req.params.id)
+    const matchday = await Matchday.findOne({id: req.params.id})
 
     if(!matchday) {
         res.status(400)
@@ -103,8 +109,8 @@ const deleteMatchday = asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error('Not authorized')
     }
-
-    await Matchday.findByIdAndDelete(req.params.id)
+    
+    await Matchday.findOneAndDelete({id: req.params.id})
     res.status(200).json({id: req.params.id})
 })
 

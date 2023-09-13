@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout, reset } from '../features/auth/authSlice'
-import { getPicks, } from '../features/picks/picksSlice'
+import { logout } from '../features/auth/authSlice'
+import { getPicks, reset } from '../features/picks/picksSlice'
 import DashboardHeader from "../components/DashboardHeader"
 import { useState } from 'react'
 
@@ -10,7 +10,7 @@ function Header() {
   
   const navigate = useNavigate() 
   const dispatch = useDispatch() 
-  const { picks } = useSelector((state) => state.picks)
+  const { managerPicks } = useSelector((state) => state.managerPicks)
   const { user } = useSelector(
     (state) => state.auth
   )
@@ -26,6 +26,10 @@ function Header() {
 
   useEffect(() => {
     dispatch(getPicks())
+
+    return () => {
+        dispatch(reset())
+    }
   }, [dispatch])
   
 
@@ -49,7 +53,7 @@ function Header() {
                         </Link>
                     </li>
                     
-                    {!picks.length ? <li>
+                    {!managerPicks ? <li>
                         <Link to='/teamSelection'>
                             Team Selection
                         </Link>
@@ -112,7 +116,7 @@ function Header() {
                         Home
                     </Link>
                     </li>
-                    {!picks.length ? <li>
+                    {!managerPicks ? <li>
                         <Link to='/teamSelection'>
                             Team Selection
                         </Link>

@@ -36,10 +36,6 @@ function PickCard({ playerPicks, index, type, handleShow, handleClose, removePic
         closeRemove()
     }
 
-    const addPick = () => {
-        console.log(`add players`)
-    }
-
     /*
     if (!modalOver && removePlayer) {
       closeRemove()
@@ -91,10 +87,10 @@ function PickCard({ playerPicks, index, type, handleShow, handleClose, removePic
                 </div>
             )
         }
-        const goalies = playerPicks.filter(x => x.playerPosition === '648a4408ae0e41bee2304c9a').map(returnMap)
-        const defenders = playerPicks.filter(x => x.playerPosition === '647faf277bb2ccc06e8bb00d').map(returnMap)
-        const midfielders = playerPicks.filter(x => x.playerPosition === '647faf357bb2ccc06e8bb010').map(returnMap)
-        const forwards = playerPicks.filter(x => x.playerPosition === '64807d367bb2ccc06e8bb051').map(returnMap)
+        const goalies = playerPicks?.filter(x => x.playerPosition === '648a4408ae0e41bee2304c9a').map(returnMap)
+        const defenders = playerPicks?.filter(x => x.playerPosition === '647faf277bb2ccc06e8bb00d').map(returnMap)
+        const midfielders = playerPicks?.filter(x => x.playerPosition === '647faf357bb2ccc06e8bb010').map(returnMap)
+        const forwards = playerPicks?.filter(x => x.playerPosition === '64807d367bb2ccc06e8bb051').map(returnMap)
 
         return { goalies, defenders, midfielders, forwards, returnDefault }
 

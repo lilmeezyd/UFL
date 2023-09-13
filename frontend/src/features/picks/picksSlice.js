@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import picksService from './picksService'
 
 const initialState = {
-    picks: [],
+    managerPicks: [],
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -10,7 +10,7 @@ const initialState = {
 }
 
 // Create Picks
-export const createPicks = createAsyncThunk('picks/create', async(data, thunkAPI) => {
+export const createPicks = createAsyncThunk('managerPicks/create', async(data, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
@@ -23,7 +23,7 @@ export const createPicks = createAsyncThunk('picks/create', async(data, thunkAPI
 })
 
 // Get Picks
-export const getPicks = createAsyncThunk('picks/get', async(_, thunkAPI) => {
+export const getPicks = createAsyncThunk('managerPicks/get', async(_, thunkAPI) => {
     try {
         const token = thunkAPI.getState().auth.user.token
         const roles = thunkAPI.getState().auth.user.roles
@@ -36,7 +36,7 @@ export const getPicks = createAsyncThunk('picks/get', async(_, thunkAPI) => {
 })
 
 export const picksSlice = createSlice({
-    name: 'picks',
+    name: 'managerPicks',
     initialState,
     reducers: {
         reset: (state) => {
@@ -55,7 +55,7 @@ export const picksSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                state.picks = action.payload
+                state.managerPicks = action.payload
             })
             .addCase(createPicks.rejected, (state, action) => {
                 state.isLoading = false
@@ -70,7 +70,7 @@ export const picksSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                state.picks = action.payload
+                state.managerPicks = action.payload
             })
             .addCase(getPicks.rejected, (state, action) => {
                 state.isLoading = false

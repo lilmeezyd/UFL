@@ -13,7 +13,7 @@ router.route('/:uid/matchday/:mid/picks/me')
       .put(protect, updatePicks)
       .post(protect, setPicks)*/
 router.route('/')
-      .get(protect, getPicks)
-router.route('/matchday/:mid')
-      .post(protect, setPicks)
+      .get(protect, verifyRoles(ROLES.NORMAL_USER), getPicks)
+      .post(protect, verifyRoles(ROLES.NORMAL_USER), setPicks)
+      .put(protect, verifyRoles(ROLES.NORMAL_USER), updatePicks)
 module.exports = router

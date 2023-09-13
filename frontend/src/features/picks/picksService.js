@@ -4,12 +4,13 @@ const API_URL = 'http://localhost:5000/api/picks/'
 
 // Create new fixture
 const createPicks = async (data, token, roles) => {
+    const {picks, teamName} = data
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.post(API_URL+`/matchday`, data, config)
+    const response = await axios.post(API_URL, {picks, teamName}, config)
     return response.data
 }
 

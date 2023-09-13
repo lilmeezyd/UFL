@@ -17,6 +17,6 @@ export const store = configureStore({
         teams: teamReducer,
         players: playerReducer,
         fixtures: fixtureReducer,
-        picks: picksReducer
+        managerPicks: picksReducer
     }
 })

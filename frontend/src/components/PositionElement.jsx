@@ -12,16 +12,17 @@ function PositionElement({ playerPicks, showPop, handleShow, handleClose, fieldP
             <div className="others">Points</div>
           </div>
           <div>
-            {fieldPosition.length > 0 && fieldPosition.map((onePlayer) => {
+            {fieldPosition.length > 0 && positions.length > 0 &&
+            teams.length > 0 && fieldPosition.map((onePlayer) => {
               let teamObj = teams.find((x) => x._id === onePlayer.playerTeam);
               //let news = onePlayer.chance_of_playing_next_round;
               let shortName = teamObj.shortName;
               let positionObj = positions?.find(
                 (x) => x._id === onePlayer.playerPosition
               );
-              let shortPos = positionObj.shortName;
+              let shortPos = positionObj?.shortName;
               let forwardImage =
-                positionObj._id === '648a4408ae0e41bee2304c9a'
+                positionObj?._id === '648a4408ae0e41bee2304c9a'
                   ? `${teamObj.code}_1-66`
                   : `${teamObj.code}-66`;
               /* let backgroundColor =
@@ -43,7 +44,7 @@ function PositionElement({ playerPicks, showPop, handleShow, handleClose, fieldP
                    ? "white"
                    : "black";*/
               return (
-                <PlayerCard
+              <PlayerCard
                   key={onePlayer._id}
                   //backgroundColor={backgroundColor}
                   //color={color}

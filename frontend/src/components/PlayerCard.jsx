@@ -66,40 +66,40 @@ function PlayerCard({ playerPicks, handleShow, handleClose, onClick, playerPos, 
             if (playerPos.playerPosition === '648a4408ae0e41bee2304c9a' &&
                 goalkeepersSelected < 2) {
                 message = <div className='message'>
-                <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
+                    <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
             }
             if (playerPos.playerPosition === '647faf277bb2ccc06e8bb00d' &&
                 defendersSelected < 5) {
                 message = <div className='message'>
-                <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
+                    <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
             }
             if (playerPos.playerPosition === '647faf357bb2ccc06e8bb010' &&
                 midfieldersSelected < 5) {
                 message = <div className='message'>
-                <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
+                    <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
             }
             if (playerPos.playerPosition === '64807d367bb2ccc06e8bb051' &&
                 forwardsSelected < 3) {
                 message = <div className='message'>
-                <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
+                    <span className='danger-span-msg'>You've already selected 3 players from {teamName}</span></div>
             }
         }
         if (playerPicks.length === 15) {
             message = <div className='message'>
-            <span className='danger-span-msg'>You already have the maximum number of Players in your squad</span></div>
+                <span className='danger-span-msg'>You already have the maximum number of Players in your squad</span></div>
         }
         if (playerPicks.length < 15 &&
             playerPos.playerPosition === '648a4408ae0e41bee2304c9a' &&
             goalkeepersSelected === 2) {
             message = <div className='message'>
-            <span className='danger-span-msg'>You already have the maximum number of Goalkeepers in your squad</span></div>
+                <span className='danger-span-msg'>You already have the maximum number of Goalkeepers in your squad</span></div>
 
         }
         if (playerPicks.length < 15 &&
             playerPos.playerPosition === '647faf277bb2ccc06e8bb00d' &&
             defendersSelected === 5) {
             message = <div className='message'>
-            <span className='danger-span-msg'>You already have the maximum number of Defenders in your squad</span></div>
+                <span className='danger-span-msg'>You already have the maximum number of Defenders in your squad</span></div>
 
         }
         if (playerPicks.length < 15 &&
@@ -118,7 +118,6 @@ function PlayerCard({ playerPicks, handleShow, handleClose, onClick, playerPos, 
 
 
         }
-        console.log(message)
         return message
     }
     return (
