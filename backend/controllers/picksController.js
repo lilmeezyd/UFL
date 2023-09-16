@@ -61,7 +61,7 @@ const setPicks = asyncHandler(async(req, res) => {
 //@access Private
 const getPicks = asyncHandler(async(req, res) => {
     const user = await User.findById(req.user.id)
-    const managerPicks = await Picks.findOne({user: req.user.id}).select('-_id').select('-user')
+    const managerPicks = await Picks.findOne({user: req.user.id}).select('-user')
 
     if(!user) {
         res.status(400)
@@ -136,17 +136,29 @@ const previousPicks = asyncHandler(async (req, res) => {
 })
 
 //@desc Update Picks before deadline
-//@route PUT /api/picks
+//@route PUT /api/picks/:id
 //@access Private
 const updatePicks = asyncHandler(async (req, res) => {
-    const picks = await Picks.findOne({user: req.user.id})
-    const picksId = picks._id
+    const playerPicks = await Picks.findById(req.params.id)
+    //const playerPicks = await Picks.findOne({user: req.user.id})
+    //const picksId = playerPicks._id
     const user = await User.findById(req.user.id)
+    const {picks} = req.body
 
-    //Check for picks
-    if(!picks) {
+    //Check for Player Picks
+    if(!playerPicks) {
         res.status(400)
-        throw new Error('Picks not found')
+        throw new Error('Picks not found') 
+    }
+
+    if(playerPicks.length < 15) {
+        res.status(400)
+        throw new Error('Something wrong')
+    }
+
+    if(picks.length < 15 || picks.length > 15) {
+        res.status(400)
+        throw new Error('15 players should be picked')
     }
 
     //Check for user
@@ -156,12 +168,12 @@ const updatePicks = asyncHandler(async (req, res) => {
     }
 
     //Check if logged in user matches the user
-    if(picks.user.toString() !== user.id) {
+    if(playerPicks.user.toString() !== user.id) {
         res.status(401)
         throw new Error('User not authorized')
     }
 
-    const updatedPicks = await Picks.findByIdAndUpdate(picksId, req.body, {new: true})
+    const updatedPicks = await Picks.findByIdAndUpdate(req.params.id, req.body, {new: true})
     res.status(200).json(updatedPicks)
 
 })

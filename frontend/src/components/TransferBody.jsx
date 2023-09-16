@@ -4,7 +4,7 @@ import Players from '../components/Players'
 import TransferComp from './TransferComp'
 import { createPicks } from '../features/picks/picksSlice'
 
-function TransferBody({ picks, players, positions, teams, list, width,
+function TransferBody({ picksId, picks, players, teams, list, width,
     toggleList, handleShow, handleClose, showPop,
     goalSlot, defSlot, midSlot, fwdSlot }) {
 
@@ -12,7 +12,7 @@ function TransferBody({ picks, players, positions, teams, list, width,
     const [goalSlots, setGoalSlots] = useState([])
     const [defSlots, setDefSlots] = useState([])
     const [midSlots, setMidSlots] = useState([])
-    const [fwdSlots, setFwdSlots] = useState([])
+    const [fwdSlots, setFwdSlots] = useState([]) 
     const [transfers, setTransfers] = useState([])
     const [showMsg, setShowMsg] = useState(false)
     const [playerMsg, setPlayerMsg] = useState('')
@@ -303,12 +303,14 @@ function TransferBody({ picks, players, positions, teams, list, width,
         
     }
 
-    const onSubmit = (e) => {
-        e.preventDefault()
+    const onSave = () => {
         //dispatch(createPicks({ picks: playerPicks, teamName }))
         //navigate('/pickteam')
         setTranSection(true)
-        console.log(playerPicks)
+    }
+
+    const changeTransfers = () => {
+        setTranSection(false)
     }
 
 
@@ -320,7 +322,10 @@ function TransferBody({ picks, players, positions, teams, list, width,
 
     return (
         <>
-            {tranSection ? <TransferComp positions={positions} teams={teams} players={players} transfers={transfers} /> : 
+            {tranSection ? <TransferComp 
+            changeTransfers={changeTransfers}
+            picksId={picksId}
+            playerPicks={playerPicks} teams={teams} players={players} transfers={transfers} /> : 
             <section className={`${showSquad}`}>
                 <div className="transfer-header">
                     <h3 className="gw-heading">Matchday 1</h3>
@@ -383,9 +388,9 @@ function TransferBody({ picks, players, positions, teams, list, width,
                         <div className="pitch_unit"></div></div>
                 </div>
                 <section className="form">
-                    <form onSubmit={onSubmit}>
+                    <form>
                         <div className="form-group">
-                            <button disabled={disableButton()} className="btn btn-block btn-green m-auto">Save</button>
+                            <button onClick={onSave} disabled={disableButton()} className="btn btn-block btn-green m-auto">Save</button>
                         </div>
                     </form>
                 </section>

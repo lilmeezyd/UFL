@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { updatePicks } from "../features/picks/picksSlice"
 
-function Squad({ handleClose, handleShow, managerPicks, players, teams, positions }) {
-    const [teamPicks, setTeamPicks] = useState(null)
+function Squad({ handleClose, handleShow, managerPicks, players, teams, positions, picksId }) {
+    const [teamPicks, setTeamPicks] = useState([])
     const [showSwap, setShowSwap] = useState(false)
     const [pick, setPick] = useState({})
     const [playerName, setPlayerName] = useState({ first: '', last: '' })
     const [playerOne, setPlayerOne] = useState({})
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     useEffect(() => {
         setTeamPicks(managerPicks)
@@ -26,7 +32,7 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
     }
 
     const switchPlayer = () => {
-        if (Object.values(playerOne).length === 0 ) {
+        if (Object.values(playerOne).length === 0) {
             setPlayerOne(pick)
         }
         if (Object.values(playerOne).length > 0) {
@@ -58,9 +64,11 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
         const old = teamPicks.find(x => x.IsCaptain)._id
         const player = teamPicks.find(x => x._id === id)
         let oldVc = player.IsViceCaptain === true ? true : false
-        if(playerOne._id === id) {
-            setPlayerOne(prevState => ({...prevState, 
-                multiplier: 2, IsViceCaptain: false, IsCaptain: true}))
+        if (playerOne._id === id) {
+            setPlayerOne(prevState => ({
+                ...prevState,
+                multiplier: 2, IsViceCaptain: false, IsCaptain: true
+            }))
         }
         setTeamPicks(teamPicks.map((pick, key) => pick._id === id ? {
             ...pick,
@@ -75,9 +83,11 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
         const player = teamPicks.find(x => x._id === id)
         let oldMultiplier = player.multiplier >= 2 ? 2 : 1
         let oldCap = player.IsCaptain === true ? true : false
-        if(playerOne._id === id) {
-            setPlayerOne(prevState => ({...prevState, 
-                IsViceCaptain: true, IsCaptain: false, multiplier: 1}))
+        if (playerOne._id === id) {
+            setPlayerOne(prevState => ({
+                ...prevState,
+                IsViceCaptain: true, IsCaptain: false, multiplier: 1
+            }))
         }
         setTeamPicks(teamPicks.map((pick, key) => pick._id === id ? {
             ...pick, IsViceCaptain: true, IsCaptain: false, multiplier: 1
@@ -92,43 +102,49 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
         console.log(id)
     }
 
+    const onSubmit = (e) => {
+        e.preventDefault()
+        dispatch(updatePicks({ picksId, picks: teamPicks }))
+        navigate('/pickteam')
+    }
+
     const disableButton = (id, pPosition, sPosition) => {
         const defXI = teamPicks.filter(x => x.playerPosition === '647faf277bb2ccc06e8bb00d' && x.multiplier > 0).length
         const midXI = teamPicks.filter(x => x.playerPosition === '647faf357bb2ccc06e8bb010' && x.multiplier > 0).length
         const fwdXI = teamPicks.filter(x => x.playerPosition === '64807d367bb2ccc06e8bb051' && x.multiplier > 0).length
         const playerPosition = playerOne.playerPosition
         const squadPosition = playerOne.position
-        if(squadPosition === 1 && sPosition !== 12 && pPosition !== playerPosition) {
+        if (squadPosition === 1 && sPosition !== 12 && pPosition !== playerPosition) {
             return true
         }
-        if(squadPosition === 12 && sPosition !== 1 && pPosition !== playerPosition) return true
-        if(playerPosition === '647faf277bb2ccc06e8bb00d') {
-            if(pPosition === '648a4408ae0e41bee2304c9a') { return true}
-            if(squadPosition > 12) {
-                if(fwdXI === 1 && pPosition === '64807d367bb2ccc06e8bb051') {
+        if (squadPosition === 12 && sPosition !== 1 && pPosition !== playerPosition) return true
+        if (playerPosition === '647faf277bb2ccc06e8bb00d') {
+            if (pPosition === '648a4408ae0e41bee2304c9a') { return true }
+            if (squadPosition > 12) {
+                if (fwdXI === 1 && pPosition === '64807d367bb2ccc06e8bb051') {
                     return true
                 }
             } else {
-                if(sPosition < 12 && sPosition !== squadPosition) return true
-                if(defXI === 3 && sPosition > 12 && pPosition !== playerPosition) return true
+                if (sPosition < 12 && sPosition !== squadPosition) return true
+                if (defXI === 3 && sPosition > 12 && pPosition !== playerPosition) return true
             }
         }
-        if(playerPosition === '647faf357bb2ccc06e8bb010') {
-            if(pPosition === '648a4408ae0e41bee2304c9a') { return true}
-            if(squadPosition > 12) {
-                if(defXI === 3 && pPosition === '647faf277bb2ccc06e8bb00d' && sPosition < 12) return true
-                if(fwdXI === 1 && pPosition === '64807d367bb2ccc06e8bb051' && sPosition < 12) return true
+        if (playerPosition === '647faf357bb2ccc06e8bb010') {
+            if (pPosition === '648a4408ae0e41bee2304c9a') { return true }
+            if (squadPosition > 12) {
+                if (defXI === 3 && pPosition === '647faf277bb2ccc06e8bb00d' && sPosition < 12) return true
+                if (fwdXI === 1 && pPosition === '64807d367bb2ccc06e8bb051' && sPosition < 12) return true
             } else {
-                if(sPosition < 12 && sPosition !== squadPosition) return true
+                if (sPosition < 12 && sPosition !== squadPosition) return true
             }
         }
-        if(playerPosition === '64807d367bb2ccc06e8bb051') {
-            if(pPosition === '648a4408ae0e41bee2304c9a') { return true}
-            if(squadPosition > 12) {
-                if(defXI === 3 && pPosition === '647faf277bb2ccc06e8bb00d' && sPosition < 12) return true
+        if (playerPosition === '64807d367bb2ccc06e8bb051') {
+            if (pPosition === '648a4408ae0e41bee2304c9a') { return true }
+            if (squadPosition > 12) {
+                if (defXI === 3 && pPosition === '647faf277bb2ccc06e8bb00d' && sPosition < 12) return true
             } else {
-                if(sPosition < 12 && sPosition !== squadPosition) return true
-                if(fwdXI === 1 && pPosition !== playerPosition) return true
+                if (sPosition < 12 && sPosition !== squadPosition) return true
+                if (fwdXI === 1 && pPosition !== playerPosition) return true
             }
         }
     }
@@ -203,7 +219,17 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
     }
     return (
         <>
-            <section>
+            <section className="squad">
+            <div className="transfer-header">
+                    <h3 className="gw-heading">Boom Box</h3>
+                </div>
+                <div className="transfer-header">
+                    <h3 className="gw-heading">Matchday 1</h3>
+                </div>
+                <div className="matchday-deadline">
+                    <h4>Matchday 1 deadline:</h4>
+                    <p>Fri 11 Aug 20:30</p>
+                </div>
                 {teamPicks && <div className="pitch">
                     <div className="starting">
                         <div className="pitch_row">
@@ -224,6 +250,14 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
                         </div>
                     </div>
                 </div>}
+
+                <section className="form">
+                    <form onSubmit={onSubmit}>
+                        <div className="form-group">
+                            <button className="btn btn-block btn-green m-auto">Save Team</button>
+                        </div>
+                    </form>
+                </section>
             </section>
             {showSwap && <div className="playerpop">
                 <div className="namesection">

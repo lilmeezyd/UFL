@@ -15,5 +15,6 @@ router.route('/:uid/matchday/:mid/picks/me')
 router.route('/')
       .get(protect, verifyRoles(ROLES.NORMAL_USER), getPicks)
       .post(protect, verifyRoles(ROLES.NORMAL_USER), setPicks)
+router.route('/:id')
       .put(protect, verifyRoles(ROLES.NORMAL_USER), updatePicks)
 module.exports = router

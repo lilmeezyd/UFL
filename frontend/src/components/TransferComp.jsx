@@ -1,6 +1,11 @@
+import { updatePicks } from "../features/picks/picksSlice"
+import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
-function TransferComp({ transfers, teams, players, positions }) {
+function TransferComp({ picksId, transfers, teams, players, playerPicks, changeTransfers }) {
 
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const getTeam = (id) => {
         let playerTeam = players.find(player => player._id === id).playerTeam
         let team = teams.find(team => team._id === playerTeam).name
@@ -24,9 +29,14 @@ function TransferComp({ transfers, teams, players, positions }) {
         return name
     }
 
-    const onSubmit = () => {}
+    const onSubmit = (e) => {
+        e.preventDefault()
+        dispatch(updatePicks({picksId, picks:playerPicks}))
+        navigate('/pickteam')
+        //dispatch(updateTransfers(transfers))
+    }
 
-    const disableButton = () => {}
+    const disableButton = () => { }
 
     return (
         <div>
@@ -64,10 +74,10 @@ function TransferComp({ transfers, teams, players, positions }) {
                     </div>)}
             </div>
             <section className="form">
-                <form onSubmit={onSubmit}>
                 <div className="form-group">
-                        <button className="btn btn-block btn-green m-auto">Change Transfers</button>
-                    </div>
+                    <button onClick={changeTransfers} className="btn btn-block btn-green m-auto">Change Transfers</button>
+                </div>
+                <form onSubmit={onSubmit}>
                     <div className="form-group">
                         <button disabled={disableButton()} className="btn btn-block btn-green m-auto">Confirm Transfers</button>
                     </div>

@@ -35,6 +35,19 @@ export const getPicks = createAsyncThunk('managerPicks/get', async(_, thunkAPI) 
     }
 })
 
+// Update Picks
+export const updatePicks = createAsyncThunk('managerPicks/update', async(data, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        const roles = thunkAPI.getState().auth.user.roles
+        return await picksService.updatePicks(data, token, roles)
+    } catch (error) {
+        const message = (error.response && error.response.data &&
+            error.response.data.message) || error.message || error.toString()
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
 export const picksSlice = createSlice({
     name: 'managerPicks',
     initialState,
@@ -73,6 +86,21 @@ export const picksSlice = createSlice({
                 state.managerPicks = action.payload
             })
             .addCase(getPicks.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.isSuccess = false
+                state.message = action.payload
+            })
+            .addCase(updatePicks.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updatePicks.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.isError = false
+                state.managerPicks = action.payload
+            })
+            .addCase(updatePicks.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.isSuccess = false

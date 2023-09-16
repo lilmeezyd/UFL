@@ -1,9 +1,9 @@
 const asyncHandler = require("express-async-handler");
 
 const League = require("../models/leagueModel");
-const TeamLeague = require("../models/teamLeagueModel");
 const Team = require("../models/teamModel");
 const User = require("../models/userModel");
+const ManagerInfo = require('../models/managerInfoModel')
 
 //@desc Set League
 //@route POST /api/leagues
@@ -84,6 +84,8 @@ const setLeague = asyncHandler(async (req, res) => {
 const addToLeague = asyncHandler(async (req, res) => {
   const leagueAdmin = await League.findById(req.params.id).admin;
   const roles = await User.findById(leagueAdmin).roles;
+  const managerInfo = await ManagerInfo.findOne({user: req.user.id})
+  const mgrId = managerInfo.mgrId
 
   //Find user
   if (!req.user) {
@@ -94,24 +96,44 @@ const addToLeague = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Unauthorized operation");
   }
-  if (!Object.values(roles).includes(2048)) {
+  if (!Object.values(req.user.roles).includes(2048)) {
   }
+  const requiredLeague = await League.findById(req.params.id)
+  const oldEntrants = requiredLeague.entrants
   const entrants = [
-    ...(await TeamLeague.findById(req.params.id).entrants),
+    ...oldEntrants,
     req.user.id,
   ];
-  const league = await TeamLeague.findByIdAndUpdate(req.params.id, entrants, {
+
+  const league = await League.findByIdAndUpdate(req.params.id, {entrants:entrants}, {
     new: true,
   });
+  
   res.status(200).json(league);
 });
 
+//@desc Get default leagues
+//@route GET /api/leagues/team
+//@access Public
+const getTeamLeagues = asyncHandler(async(req, res) => {
+  const leagues = await League.find({id: {$lte: 17}})
+  res.status(200).json(leagues)
+})
+
+//@desc Get default leagues
+//@route GET /api/leagues/overall
+//@access Public
+const getOverallLeague = asyncHandler(async(req, res) => {
+  const league = await League.findOne({id: 18})
+  res.status(200).json(league)
+})
+
 //@desc Get Leagues for a specific user
-//@route GET /api/leagues/
+//@route GET /api/leagues/users/:id
 //@access Private
 const getLeagues = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
-  const leagues = await League.find({});
+  const leagues = await League.find({entrants: {$in: [req.params.id]}});
 
   if (!user) {
     res.status(400);
@@ -125,7 +147,7 @@ const getLeagues = asyncHandler(async (req, res) => {
 //@route GET /api/leagues/:id
 //@access Private
 const getLeague = asyncHandler(async (req, res) => {
-  const league = await League.findOne({ id: req.params.id });
+  const league = await League.findById(req.params.id);
   res.status(200).json(league);
 });
 
@@ -150,9 +172,14 @@ const deleteLeague = asyncHandler(async (req, res) => {
   }
 
   // Make sure the logged in user matches the user
-  if (!Object.values(req.user.roles).includes(2048) && (league.admin.toString() !== req.user.id)) {
+  if (!Object.values(req.user.roles).includes(2048) && (league.admin === null)) {
     res.status(401);
     throw new Error("User not authorized");
+  }
+
+  if(!Object.values(req.user.roles).includes(2048) && (league.admin.toString() !== req.user.id)) {
+    res.status(401)
+    throw new Error("You are not the admin")
   }
 
   await League.findOneAndDelete({ id: req.params.id });
@@ -166,4 +193,6 @@ module.exports = {
   getLeague,
   editLeague,
   deleteLeague,
+  getTeamLeagues,
+  getOverallLeague
 };

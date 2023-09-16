@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = 'http://localhost:5000/api/picks/' 
 
-// Create new fixture
+// Create picks
 const createPicks = async (data, token, roles) => {
     const {picks, teamName} = data
     const config = {
@@ -14,7 +14,7 @@ const createPicks = async (data, token, roles) => {
     return response.data
 }
 
-// Create new fixture
+// Get player picks
 const getPicks = async (token, roles) => {
     const config = {
         headers: {
@@ -25,9 +25,22 @@ const getPicks = async (token, roles) => {
     return response.data
 }
 
+// update player picks
+const updatePicks = async (data, token , roles) => {
+    const { picks, picksId } = data
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.put(API_URL+picksId, {picks}, config)
+    return response.data
+}
+
 const picksService = {
     createPicks,
-    getPicks
+    getPicks,
+    updatePicks
 }
 
 export default picksService

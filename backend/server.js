@@ -29,6 +29,7 @@ app.use('/api/fixtures', require('./routes/fixtureRoutes'))
 app.use('/api/matchdays', require('./routes/matchdayRoutes'))
 app.use('/api/picks', require('./routes/pickRoutes'))
 app.use('/api/leagues', require('./routes/leagueRoutes'))
+app.use('/api/managerinfo', require('./routes/managerInfoRoutes'))
 
 app.use(errorHandler)
 

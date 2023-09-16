@@ -28,15 +28,18 @@ function PickTeam({ handleClose, handleShow }) {
 
 
   return (
+    <>
     <div className='team-selection'>
       {!!teams.length === true && 
       !!positions.length === true &&
       !!managerPicks === true &&
       <Squad handleShow={handleShow} handleClose={handleClose} players={players} teams={teams} positions={positions} 
-      managerPicks={managerPicks.picks} />}
-      <div>Leagues</div>
+      managerPicks={managerPicks.picks}
+      picksId={managerPicks._id} />}
+      <div className="playersCol">Leagues</div>
       <FixtureList />
     </div>
+    </>
   )
 }
 

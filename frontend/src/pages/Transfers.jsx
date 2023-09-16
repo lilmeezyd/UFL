@@ -80,6 +80,7 @@ function Transfers({ showPop, handleShow, handleClose }) {
       <div className='team-selection'>
         {Object.keys(managerPicks).length > 0 && <TransferBody
           picks={managerPicks?.picks}
+          picksId={managerPicks?._id}
           list={list}
           width={width}
           teams={teams}
