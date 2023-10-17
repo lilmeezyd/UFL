@@ -804,7 +804,7 @@ label {
   padding: 0.5rem;
   font-size: 12px;
   border: 0px none;
-  color: rgb(122, 122, 122);
+  color: white;
   box-shadow: rgba(0, 0, 0, 0.06) 0px 1px 8px 0px;
   cursor: pointer;
 }
@@ -1352,4 +1352,22 @@ ul.react-paginate li.disabled a {
 
 .danger-span-msg {
   background: darkred;
+}
+
+.league-wrapper, .transfer-wrapper, .chips-wrapper, .balance-wrapper {
+  padding: 0.5rem 0;
+  margin: 0.5rem 0;
+  background: aliceblue;
+}
+.league-header {
+  font-weight: 600;
+  /*padding: 0.5rem 0;*/
+}
+
+.league {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  font-size: 13px;
+  padding: 0.3rem 0;
 }

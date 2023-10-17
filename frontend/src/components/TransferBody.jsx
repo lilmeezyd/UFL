@@ -37,7 +37,12 @@ function TransferBody({ picksId, picks, players, teams, list, width,
         setTransfers([])
     }
     const onAuto = () => {
-        console.log(playerPicks)
+        const squad = playerPicks.reduce((a, b) => {
+            a[b.playerPosition] = a[b.playerPosition] ? ++a[b.playerPosition] : 1
+            return a
+        }, {})
+        let player = players[Math.floor(Math.random()*players.length + 1)]
+        onClick(player)
     }
 
     const returnPosition = (id) => {
@@ -348,12 +353,12 @@ function TransferBody({ picksId, picks, players, teams, list, width,
                 </div>
                 <div className="auto-reset">
                     <div className="fpl-buttons">
-                        <button onClick={onAuto} className="btn-auto-reset">
+                        <button disabled={playerPicks.length === 15} onClick={onAuto} className="btn-auto-reset btn-green">
                             Auto Pick
                         </button>
                     </div>
                     <div className="fpl-buttons">
-                        <button onClick={onReset} className="btn-auto-reset">Reset</button>
+                        <button disabled={picks === playerPicks} onClick={onReset} className="btn-auto-reset btn-green">Reset</button>
                     </div>
                 </div>
                 {showMsg && <div className="message">

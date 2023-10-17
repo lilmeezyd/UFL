@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import TransferHeader from '../components/TransferHeader'
 import FixtureList from '../components/FixtureList'
 import { getPlayers, reset } from '../features/players/playerSlice'
-import { getTeams } from '../features/teams/teamSlice'
+import  { getTeamLeagues } from '../features/leagues/leagueSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import SelectionBody from '../components/SelectionBody'
 
@@ -11,7 +11,7 @@ function TeamSelection({ managerPicks, showPop, handleClose, handleShow }) {
   const [list, setList] = useState(false)
   const dispatch = useDispatch()
   const { players } = useSelector((state) => state.players)
-  const { teams } = useSelector(state => state.teams)
+  const { leagues } = useSelector(state => state.leagues)
 
   const onResize = () => {
     setWidth(window.innerWidth)
@@ -19,7 +19,7 @@ function TeamSelection({ managerPicks, showPop, handleClose, handleShow }) {
 
   useEffect(() => {
     dispatch(getPlayers())
-    dispatch(getTeams())
+    dispatch(getTeamLeagues())
     window.addEventListener('resize', onResize)
 
     return () => {
@@ -114,7 +114,7 @@ function TeamSelection({ managerPicks, showPop, handleClose, handleShow }) {
           picks={[]}
           list={list}
           width={width}
-          teams={teams}
+          teamLeagues={leagues}
           goalSlot={goalSlots} defSlot={defSlots} midSlot={midSlots} fwdSlot={fwdSlots}
           toggleList={toggleList} handleShow={handleShow}
           handleClose={handleClose} players={players} showPop={showPop} />

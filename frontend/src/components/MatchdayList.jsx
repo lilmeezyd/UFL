@@ -23,14 +23,14 @@ if(isLoading) {
     (matchdays.length === 0 ? 'No matchdays found!' : 
    <div className="div-wrapper">
     { matchdays.map(matchday => (
-        <div key={matchday._id} className="content-wrapper">
+        <div key={matchday.id} className="content-wrapper">
         <p>{matchday.name}</p>
         <p>{new Date(matchday.deadlineTime).toDateString()}</p>
         <p>{new Date(matchday.deadlineTime)
         .toLocaleTimeString().slice(0, new Date(matchday.deadlineTime)
         .toLocaleTimeString().length-3)+'HRS'}</p>
         <p><button 
-        onClick={() => dispatch(deleteMatchday(matchday._id))} className="btn btn-danger">Delete</button></p>
+        onClick={() => dispatch(deleteMatchday(matchday.id))} className="btn btn-danger">Delete</button></p>
         <p><button className="btn btn-warning">Edit</button></p>
         
         </div>

@@ -2,15 +2,18 @@ import { useDispatch, useSelector } from "react-redux"
 import { deleteFixture, getFixtures, populateFixture, reset } from "../features/fixtures/fixtureSlice"
 import { getMatchdays } from "../features/matchdays/matchdaySlice"
 import { getTeams } from "../features/teams/teamSlice"
+import { setInitialPoints, deletePoints } from "../features/lives/livesSlice"
 import { useMemo, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import FixtureItem from "./FixtureItem"
 import getTime from "../utils/getTime"
 import getPm from "../utils/getPm"
 
-function FixtureList({onEdit}) {
+function FixtureList({onEdit, handleClose, handleShow}) {
 
-const [index, setIndex] = useState(1)    
+const [index, setIndex] = useState(1) 
+const [showSwap, setShowSwap] = useState(false)  
+const [initialData, setInitialData] = useState({mid: '', fid: ''})
 const dispatch = useDispatch()
 const user = useSelector((state) => state.auth)
 const { fixtures, isLoading, isError, message } = useSelector(
@@ -79,12 +82,32 @@ const returnDay = (data, idx) => {
     }
 }
 
+const initialPoints = (x, y) => {
+    const data = {mid: y, fid: x}
+    setShowSwap(true)
+    handleShow()
+    setInitialData(data)
+    dispatch(populateFixture(x))
+}
+
+const closeInitial = () => {
+    setShowSwap(false)
+    handleClose()
+    dispatch(setInitialPoints(initialData))
+}
+
+const deleteMatch = (x, y) => {
+    dispatch(deleteFixture(x))
+    //dispatch(deletePoints({mid: y, id: x}))
+}
+
 /*
 if(isLoading) {
     return <Spinner />
 }*/
   return (
     (fixtures.length === 0 ? 'No fixtures found!' : 
+    <>
    <div className="div-wrapper">
     <h1>Fixtures</h1>
     <section className="btn-wrapper">
@@ -108,18 +131,26 @@ if(isLoading) {
         { !!user.user && user.user.roles.includes(2048) &&
             <div className="buttons-group">
                 <p><button 
-                onClick={() => dispatch(deleteFixture(fixture._id))} className="btn btn-danger">Delete</button></p>
+                onClick={() => deleteMatch(fixture._id, fixture.matchday)} className="btn btn-danger">Delete</button></p>
                 <p><button
                 onClick={() => onClick(fixture._id)} className="btn btn-warning">Edit</button></p>
                 <p><button
-                onClick={() => dispatch(populateFixture(fixture._id))}
+                onClick={() => initialPoints(fixture._id, fixture.matchday)}
                 className="btn btn-ready">Start</button></p>
             </div>
         } 
         
         </div>
     ))}
-   </div>)
+   </div>
+   {showSwap && <div className="playerpop">
+                <div className="infobuttons">
+                    <button onClick={() => closeInitial()} className='btn-info btn-info-block btn-warn'>
+                        Set Initial Points
+                    </button>
+                </div>
+            </div>}
+   </>)
   )
 }
 

@@ -17,7 +17,7 @@ const managerInfoSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    leagues: [{ type: mongoose.Schema.Types.ObjectId, ref: "League" }],
+    leagues: [],
     matchdayPoints: {
       type: Number,
       default: 0,

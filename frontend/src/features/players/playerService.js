@@ -33,7 +33,7 @@ const updatePlayer = async (data, token, roles) => {
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.put(API_URL+id, {...playerStat, matchday}, config)
+    const response = await axios.put(API_URL+id, {...playerStat, matchday}, config) 
     return response.data
 }
 

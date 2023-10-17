@@ -87,10 +87,11 @@ export const matchdaySlice = createSlice({
                 state.isLoading = true
             })
             .addCase(deleteMatchday.fulfilled, (state, action) => {
+                console.log(action.payload)
                 state.isLoading = false
                 state.isSuccess = true
                 state.isError = false
-                state.matchdays = state.matchdays.filter((matchday) => matchday._id !== action.payload.id)
+                state.matchdays = state.matchdays.filter((matchday) => matchday.id !== action.payload.id)
             })
             .addCase(deleteMatchday.rejected, (state, action) => {
                 state.isLoading = false

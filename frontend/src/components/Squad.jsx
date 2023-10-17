@@ -3,7 +3,8 @@ import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { updatePicks } from "../features/picks/picksSlice"
 
-function Squad({ handleClose, handleShow, managerPicks, players, teams, positions, picksId }) {
+function Squad({ handleClose, handleShow, managerPicks, teamName, 
+    matchdays, fixtures, players, teams, positions, picksId }) {
     const [teamPicks, setTeamPicks] = useState([])
     const [showSwap, setShowSwap] = useState(false)
     const [pick, setPick] = useState({})
@@ -56,6 +57,9 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
 
     const cancelPlayer = () => {
         setPlayerOne({})
+        setPick({})
+        setPlayerName({ first: '', last: '' })
+        //setTeamPicks(managerPicks)
         setShowSwap(false)
         handleClose()
     }
@@ -149,11 +153,26 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
         }
     }
 
+    const disableSubmit = () => {
+        if(managerPicks === teamPicks) return true
+        return false
+
+    }
+
 
     const returnXI = () => {
         const returnMap = pick => {
             const player = players?.find(x => x._id === pick._id)
             const teamCode = teams?.find(x => x._id === pick.playerTeam)?.code
+            const team = teams?.find(x => x._id === pick.playerTeam)?._id
+            const matchday = matchdays?.find(x => x.next === true)?._id
+            const fixtureObj = fixtures?.find(x => x.matchday === matchday && 
+                (x.teamAway === team || x.teamHome === team))
+            let pitch = fixtureObj?.teamHome === team ? '(H)' : 
+            fixtureObj?.teamAway === team  ? '(A)': ''
+            let teamAgainstId = fixtureObj?.teamHome === team ? 
+            fixtureObj?.teamAway : fixtureObj?.teamHome
+            const teamAgainst = teams?.find(x => x._id === teamAgainstId)?.shortName
             let forwardImage =
                 player?.playerPosition === '648a4408ae0e41bee2304c9a'
                     ? `${teamCode}_1-66`
@@ -165,7 +184,7 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
                         <img className='image_pic' src={require(`../static/shirt_${forwardImage}.webp`)} alt={forwardImage} />
                         <div className='details-cont'>
                             <div className='data_name'>{appName}</div>
-                            <div className='data_price'>{pick.nowCost.toFixed(1)}</div>
+                            <div className='data_price'>{teamAgainst}&nbsp;{pitch}</div>
                         </div>
                     </button>
                     <div className="captain">
@@ -190,6 +209,15 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
         const returnMap = pick => {
             const player = players?.find(x => x._id === pick._id)
             const teamCode = teams?.find(x => x._id === pick.playerTeam).code
+            const team = teams?.find(x => x._id === pick.playerTeam)?._id
+            const matchday = matchdays?.find(x => x.next === true)?._id
+            const fixtureObj = fixtures?.find(x => x.matchday === matchday && 
+                (x.teamAway === team || x.teamHome === team))
+            let pitch = fixtureObj?.teamHome === team ? '(H)' : 
+            fixtureObj?.teamAway === team  ? '(A)': ''
+            let teamAgainstId = fixtureObj?.teamHome === team ? 
+            fixtureObj?.teamAway : fixtureObj?.teamHome
+            const teamAgainst = teams?.find(x => x._id === teamAgainstId)?.shortName
             let forwardImage =
                 player?.playerPosition === '648a4408ae0e41bee2304c9a'
                     ? `${teamCode}_1-66`
@@ -202,7 +230,7 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
                         <img className='image_pic' src={require(`../static/shirt_${forwardImage}.webp`)} alt={forwardImage} />
                         <div className='details-cont'>
                             <div className='data_name'>{appName}</div>
-                            <div className='data_price'>{pick.nowCost.toFixed(1)}</div>
+                            <div className='data_price'>{teamAgainst}&nbsp;{pitch}</div>
                         </div>
                     </button>
                     <div className="short">{short}</div>
@@ -219,17 +247,12 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
     }
     return (
         <>
+            {players.length > 0 && 
+            positions.length > 0 &&
+            teams.length > 0 &&
+            fixtures.length > 0 &&
+            matchdays.length > 0 &&
             <section className="squad">
-            <div className="transfer-header">
-                    <h3 className="gw-heading">Boom Box</h3>
-                </div>
-                <div className="transfer-header">
-                    <h3 className="gw-heading">Matchday 1</h3>
-                </div>
-                <div className="matchday-deadline">
-                    <h4>Matchday 1 deadline:</h4>
-                    <p>Fri 11 Aug 20:30</p>
-                </div>
                 {teamPicks && <div className="pitch">
                     <div className="starting">
                         <div className="pitch_row">
@@ -254,19 +277,19 @@ function Squad({ handleClose, handleShow, managerPicks, players, teams, position
                 <section className="form">
                     <form onSubmit={onSubmit}>
                         <div className="form-group">
-                            <button className="btn btn-block btn-green m-auto">Save Team</button>
+                            <button disabled={disableSubmit()} className="btn btn-block btn-green m-auto">Save Team</button>
                         </div>
                     </form>
                 </section>
-            </section>
+            </section>}
             {showSwap && <div className="playerpop">
                 <div className="namesection">
                     <span>{playerName.first}&nbsp;{playerName.last}</span>
                     <button onClick={handleCloseSwap} className="ns-btn btn-close btn-danger"><svg style={{ color: 'white' }} xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-x" viewBox="0 0 16 16"> <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" fill="white"></path> </svg></button>
                 </div>
                 <div className="infobuttons">
-                    {<button onClick={switchPlayer} className='btn-info btn-info-block btn-warn'>
-                        Switch
+                    {<button onClick={pick._id === playerOne._id ? cancelPlayer : switchPlayer} className='btn-info btn-info-block btn-warn'>
+                        {pick._id === playerOne._id ? 'Cancel' : 'Switch'}
                     </button>}
                     {pick.multiplier > 0 && !pick.IsCaptain && <button onClick={() => changeCaptain(pick._id)} className='btn-info btn-info-block btn-cap'>
                         Make Captain

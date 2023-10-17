@@ -14,7 +14,7 @@ const { protect } = require("../middleware/authMiddleware");
 const ROLES = require("../config/permissions");
 const verifyRoles = require("../middleware/rolesMiddleware");
 
-router.route("/").post(protect, setLeague).get(protect, getLeagues);
+router.route("/").post(protect, setLeague);
 router.route('/teams').get(getTeamLeagues)
 router.route('/overall').get(getOverallLeague)
 router

@@ -4,19 +4,20 @@ import Players from '../components/Players'
 import { createPicks } from '../features/picks/picksSlice'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { addToLeague } from '../features/leagues/leagueSlice'
 
-function SelectionBody({ teams, picks, players, list, width,
+function SelectionBody({ teamLeagues, picks, players, list, width,
     toggleList, handleShow, handleClose, showPop,
     goalSlot, defSlot, midSlot, fwdSlot }) {
     const [teamName, setTeamName] = useState('')
-    const [league, setLeague] = useState(123)
+    const [league, setLeague] = useState('64f51d5d64a599eb910e8ff1')
     const [playerPicks, setPlayerPicks] = useState([])
     const [goalSlots, setGoalSlots] = useState([])
     const [defSlots, setDefSlots] = useState([])
     const [midSlots, setMidSlots] = useState([])
     const [fwdSlots, setFwdSlots] = useState([])
     const [showMsg, setShowMsg] = useState(false)
-    const [playerMsg, setPlayerMsg] = useState('')
+    const [playerMsg, setPlayerMsg] = useState('') 
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -186,6 +187,8 @@ function SelectionBody({ teams, picks, players, list, width,
     const onSubmit = (e) => {
         e.preventDefault()
         dispatch(createPicks({ picks: playerPicks, teamName }))
+        dispatch(addToLeague(league))
+        dispatch(addToLeague('6504dbaaa5c601808d971cf4'))
         navigate('/pickteam')
     }
 
@@ -277,7 +280,7 @@ function SelectionBody({ teams, picks, players, list, width,
                             <div className="form-group fav-team">
                                 <label htmlFor="team">Favorite Team</label>
                                 <select name="team" id="team" onChange={selectLeague}>
-                                    {teams.map(team => (
+                                    {teamLeagues.map(team => (
                                         <option value={team._id} key={team._id}>
                                             {team.name}
                                         </option>

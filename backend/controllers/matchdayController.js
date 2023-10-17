@@ -49,7 +49,8 @@ const setMatchday = asyncHandler(async (req, res) => {
 //@access Public
 //@role Admin, editor, normal_user
 const getMatchdays = asyncHandler(async (req, res) => {
-    const matchdays = await Matchday.find({}).select('-_id')
+    const matchdays = await Matchday.find({})
+    //const matchdays = await Matchday.find({}).select('-_id')
     res.status(200).json(matchdays)
 })
 
@@ -111,7 +112,7 @@ const deleteMatchday = asyncHandler(async (req, res) => {
     }
     
     await Matchday.findOneAndDelete({id: req.params.id})
-    res.status(200).json({id: req.params.id})
+    res.status(200).json({id: +req.params.id})
 })
 
 module.exports = { setMatchday, getMatchdays, updateMatchday, deleteMatchday}

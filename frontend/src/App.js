@@ -74,7 +74,16 @@ function App() {
                     />
                   }
                 />
-                <Route path="/points" element={<Points />} />
+                <Route
+                  path="/points"
+                  element={
+                    <Points
+                      managerPicks={managerPicks}
+                      handleShow={handleShow}
+                      handleClose={handleClose}
+                    />
+                  }
+                />
                 <Route
                   path="/pickteam"
                   element={
@@ -109,7 +118,15 @@ function App() {
                 <Route path="/dashboard/players" element={<Players />} />
                 <Route path="/dashboard/teams" element={<Teams />} />
                 <Route path="/dashboard/matchdays" element={<Matchdays />} />
-                <Route path="/dashboard/fixtures" element={<Fixtures />} />
+                <Route
+                  path="/dashboard/fixtures"
+                  element={
+                    <Fixtures
+                      handleShow={handleShow}
+                      handleClose={handleClose}
+                    />
+                  }
+                />
                 <Route path="/dashboard/positions" element={<Positions />} />
               </Route>
               <Route path="*" element={<p>There's nothing here: 404!</p>} />

@@ -9,8 +9,8 @@ import DisplayStats from "./DisplayStats"
 import { toast } from "react-toastify"
 
 
-function EditFixture({fixtureId, clearEdit}) {
-    
+function EditFixture({fixtureId, clearEdit, handleShow, handleClose}) {
+     
     const { teams } = useSelector((state) => state.teams)
     const { matchdays } = useSelector((state) => state.matchdays)
     const { singleFixture, isError,  message, isSuccess } = useSelector((state) => state.fixtures)
@@ -110,7 +110,7 @@ function EditFixture({fixtureId, clearEdit}) {
           </div>
         </form>
       </section> : <EditStats fixtureId={fixtureId}
-      singleFixture={singleFixture}
+      singleFixture={singleFixture} handleClose={handleClose} handleShow={handleShow}
        />}
       </>
   )

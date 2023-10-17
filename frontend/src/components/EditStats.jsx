@@ -2,13 +2,15 @@ import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getPlayers, getPlayer, updatePlayer  } from "../features/players/playerSlice"
 import { editStats, reset } from "../features/fixtures/fixtureSlice"
+import { addPointsToPicks } from "../features/lives/livesSlice"
 import { toast } from "react-toastify"
 
-function EditStats({singleFixture}) {
+function EditStats({singleFixture, handleShow, handleClose}) {
 
     const { players, onePlayer } = useSelector((state) => state.players)
     const { isError, isSuccess, message } = useSelector((state) => state.fixtures)
     const dispatch = useDispatch()
+    const [showSwap, setShowSwap] = useState(false) 
     const [data, setData ] = useState({
         identifier: '', homeAway: '', player: '', value: ''
     })
@@ -39,13 +41,20 @@ function EditStats({singleFixture}) {
         dispatch(updatePlayer({id: player, playerStat, matchday:singleFixture.matchday}))
         
         dispatch(editStats({id: singleFixture._id, stats}))
-        setData((prevState) => ({
+       /* setData((prevState) => ({
             ...prevState,
             identifier: '',
             homeAway: '',
             player: '',
             value: ''
-        }))
+        })) */
+        setShowSwap(true)
+        handleShow()
+    }
+    const closeAddPoints = () => {
+      dispatch(addPointsToPicks({mid: singleFixture.matchday, pid: player}))
+      setShowSwap(false)
+      handleClose()
     }
     const onChange = (e) => {
         setData((prevState) => ({
@@ -54,6 +63,7 @@ function EditStats({singleFixture}) {
         }))
     }
   return (
+    <>
     <section className='form'>
         <form onSubmit={onSubmit}> 
           
@@ -104,6 +114,14 @@ function EditStats({singleFixture}) {
           </div>
         </form>
       </section>
+      {showSwap && <div className="playerpop">
+                <div className="infobuttons">
+                    <button onClick={() => closeAddPoints()} className='btn-info btn-info-block btn-warn'>
+                        Add Player Points
+                    </button>
+                </div>
+            </div>}
+      </>
   )
 }
 

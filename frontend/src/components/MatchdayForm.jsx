@@ -6,11 +6,10 @@ import Spinner from "../components/Spinner"
 function MatchdayForm() {
 
     const [ data, setData ] = useState({
-        name: '',
-        deadlineTime: ''
+        name: ''
       }) 
     
-      const { name, deadlineTime } = data
+      const { name } = data
       const dispatch = useDispatch()
       const { isLoading, isError, message } = useSelector(
         (state) => state.matchdays)
@@ -32,13 +31,12 @@ function MatchdayForm() {
       const onSubmit = (e) => {
         e.preventDefault()
         const matchdayData = {
-          name, deadlineTime
+          name
         }
         dispatch(createMatchday(matchdayData))
         setData((prevState) => ({
           ...prevState,
           name: '',
-          deadlineTime:''
         }))
       }
     
@@ -50,10 +48,6 @@ function MatchdayForm() {
         <form onSubmit={onSubmit}>
           <div className="form-group">
             <input type="text" id='name' name='name' value={name} placeholder='Enter Matchday'
-            onChange={onChange} />
-          </div>
-          <div className="form-group">
-            <input type="datetime-local" id='deadlineDate' name='deadlineTime' value={deadlineTime}
             onChange={onChange} />
           </div>
           <div className="form-group">

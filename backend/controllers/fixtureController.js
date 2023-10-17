@@ -263,7 +263,7 @@ const getFixture = asyncHandler(async (req, res) => {
 })
 
 //@desc Delete Fixture
-//@route PUT /api/fixtures/:id
+//@route DELETE /api/fixtures/:id
 //@access private
 //@role ADMIN EDITOR
 const deleteFixture = asyncHandler(async (req, res) => {

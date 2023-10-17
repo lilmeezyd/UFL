@@ -8,6 +8,8 @@ import playerReducer from '../features/players/playerSlice'
 import fixtureReducer from '../features/fixtures/fixtureSlice'
 import picksReducer from '../features/picks/picksSlice'
 import leagueReducer from '../features/leagues/leagueSlice'
+import managerInfoReducer from '../features/managerInfo/managerInfoSlice'
+import livesReducer from '../features/lives/livesSlice'
 
 export const store = configureStore({
     reducer: {
@@ -19,6 +21,8 @@ export const store = configureStore({
         players: playerReducer,
         fixtures: fixtureReducer,
         managerPicks: picksReducer,
-        leagues: leagueReducer
+        leagues: leagueReducer,
+        managerInfo: managerInfoReducer,
+        lives: livesReducer
     }
 })

@@ -40,6 +40,14 @@ const setPicks = asyncHandler(async(req, res) => {
         throw new Error('Manager Info already created')
     }
 
+    const teamValue = picks.reduce((x,y) => x+(+y.nowCost), 0)
+    const bank = 100-teamValue
+
+    if(bank < 0) {
+        res.status(400)
+        throw new Error('Not enough funds')
+    }
+
 
    const managerInfo = await ManagerInfo.create({
     user: req.user.id,
@@ -50,6 +58,8 @@ const setPicks = asyncHandler(async(req, res) => {
 
    const matchdayPicks = await Picks.create({
         picks,
+        teamValue,
+        bank,
         user: req.user.id
     }) 
 

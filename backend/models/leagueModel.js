@@ -22,7 +22,7 @@ const leagueSchema = mongoose.Schema(
     },
     entrants: {
       type: [mongoose.Schema.Types.ObjectId],
-      ref: "User",
+      ref: "ManagerInfo",
     },
   },
   {
